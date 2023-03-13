@@ -14,40 +14,42 @@ public class NetworkModel
     private static (Vector, Matrix?)[] _layers;
 
 
-    private void setup(int hiddenLayers = 1, bool randomStart = true)
+    private void Setup(int hiddenLayers = 1, bool randomStart = true)
     {
         //todo reassess this setup function, it seems overly complicated.
-        _layers = new (Vector, Matrix?)[hiddenLayers + 2];
+        int layerCount = hiddenLayers + 2;
+        _layers = new (Vector, Matrix?)[layerCount];
         _layers[0] = (new Vector(784), null);
         var prev = 784;
-        for (var i = 1; i < _layers.Length - 1; i++)
+        for (var i = 1; i < layerCount; i++)
         {
             prev = _layers[i - 1].Item1.Length;
-            var n = (int)Math.Sqrt(prev * 10);
+            var n = (int)Math.Sqrt(prev * 10)+10;
             _layers[i] = (new Vector(n), new Matrix(n, prev).WithRandom());
         }
 
-        _layers[_layers.Length - 1] = (new Vector(10), new Matrix(10, prev).WithRandom());
+        _layers[^1] = (new Vector(10), new Matrix(10, _layers[^2].Item1.Length).WithRandom());
     }
 
     public void Train(int gens = 5, int gensize = 1750, float learningrate = .1f)
     {
-        setup();
+        Setup();
         Random rand = new();
-        int n;
         Stopwatch sw = new();
         for (var i = 0; i < gens; i++)
         {
+            sw.Start();
             for (var j = 0; j < gensize; j++)
             {
-                n = rand.Next((int)6e4);
+                var n = rand.Next((int)6e4);
                 var res = ProcessLayers(FromBytes(MnistReader.TrainImage(n)));
                 var error = AssessError(MnistReader.TrainLabel(n), res);
                 PropagetError(error, learningrate);
                 Progress.PrintProgress(j, gensize, sw);
             }
-
-            Assess();
+            sw.Reset();
+            Console.WriteLine();
+            Assess(ref sw);
         }
     }
 
@@ -56,15 +58,14 @@ public class NetworkModel
         var err = new Vector[_layers.Length - 1];
         err[^1] = error;
 
-        for (var i = _layers.Length - 2; i > 0; i--) err[i - 1] = _layers[i].Item2!.T * err[i];
+        for (var i = _layers.Length-2; i > 0 ; i--) err[i-1] = _layers[^i].Item2!.T * err[i];
 
         for (var i = _layers.Length - 1; i > 0; i--)
         {
             var outp = _layers[i].Item1;
             var next = _layers[i - 1].Item1;
-
             // update matrix. matrix should never be null at this point
-            _layers[i].Item2 += learningrate * (err[i] * outp * (1 - outp) * next.T());
+            _layers[i].Item2 += learningrate * (err[i - 1] * outp * (1 - outp) * next.T());
         }
     }
 
@@ -97,10 +98,9 @@ public class NetworkModel
         return tmp;
     }
 
-    private void Assess(int iterations = 1000)
+    private void Assess(ref Stopwatch sw,int iterations = 1000)
     {
         Random rand = new();
-        Stopwatch sw = new();
         var hits = 0;
         sw.Start();
         for (var i = 0; i < iterations; i++)
@@ -110,6 +110,7 @@ public class NetworkModel
             if (res.Max() == MnistReader.Label(n)) hits++;
 
             Progress.PrintProgress(i, iterations, sw, hits);
+            Console.WriteLine();
         }
     }
 

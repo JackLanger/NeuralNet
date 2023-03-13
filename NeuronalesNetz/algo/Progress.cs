@@ -9,14 +9,9 @@ public static class Progress
     {
         StringBuilder bars = new();
         var barsProg = (double)(n * 20) / total;
-        for (var i = 0; i < 20; i++)
-            if (i <= barsProg)
-                bars.Append("=");
-            else
-                bars.Append(" ");
-        if (hits >= 0)
-            Console.Write($"ASSESSING GEN : {n:0000}/{total}:[{bars}] {(double)hits / n:P} {sw.Elapsed}\r");
-        else
-            Console.Write($"TRAINING GEN: {n:0000}/{total}:[{bars}] {sw.Elapsed}\r");
+        for (var i = 0; i < 20; i++) bars.Append(i <= barsProg ? '=' : ' ');
+        Console.Write(hits >= 0
+            ? $"ASSESSING GEN : {n:0000}/{total}:[{bars}] {(double)hits / n:P} {sw.Elapsed:g}\r"
+            : $"TRAINING GEN: {n:0000}/{total}:[{bars}] {sw.Elapsed:g}\r");
     }
 }
