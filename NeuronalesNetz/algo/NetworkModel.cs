@@ -58,6 +58,7 @@ public class NetworkModel
         for (var i = 0; i < gens; i++)
         {
             sw.Start();
+            Console.ForegroundColor = ConsoleColor.Green;
             for (var j = 0; j < gensize; j++)
             {
                 var n = rand.Next((int)6e4);
@@ -68,7 +69,7 @@ public class NetworkModel
             }
             sw.Reset();
             Console.WriteLine();
-            
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Assess(ref sw);
         }
     }

@@ -4,4 +4,4 @@ using MachineLearn.extension;
 using NeuronalesNetz.algo;
 
 NetworkModel nm = new NetworkModel(1);
-nm.Train(gens:8,gensize:5000);
+nm.Train();
