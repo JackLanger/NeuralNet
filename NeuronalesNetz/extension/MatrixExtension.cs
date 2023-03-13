@@ -1,6 +1,6 @@
 ﻿using MathTools;
 
-namespace MachineLearn.extension;
+namespace NeuronalesNetz.extension;
 
 public static class MatrixExtension
 {

@@ -1,4 +1,5 @@
-﻿using MathTools;
+﻿using System.Text;
+using MathTools;
 
 namespace MachineLearn.extension;
 
@@ -35,4 +36,14 @@ public static class VectorExtensions
 
         return index;
     }
+
+
+    public static Vector FromBytes(this Vector v, byte[] b)
+    {
+        
+        for (var i = 0; i < b.Length; i++) v[i] = b[i];
+        return v;
+    }
+
+    
 }

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Text;
+using MathTools;
 
 namespace MachineLearn.extension;
 
@@ -14,4 +15,5 @@ public static class Progress
             ? $"ASSESSING GEN : {n:0000}/{total}:[{bars}] {(double)hits / n:P} {sw.Elapsed:g}\r"
             : $"TRAINING GEN: {n:0000}/{total}:[{bars}] {sw.Elapsed:g}\r");
     }
+    
 }
