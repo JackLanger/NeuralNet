@@ -1,7 +1,6 @@
-﻿using System.Text;
-using MathTools;
+﻿using MathTools;
 
-namespace MachineLearn.extension;
+namespace NeuronalesNetz.extension;
 
 public static class VectorExtensions
 {
@@ -21,6 +20,7 @@ public static class VectorExtensions
     {
         return 1 / (1 + Math.Pow(Math.E, -x));
     }
+
 
     public static int Max(this Vector v)
     {

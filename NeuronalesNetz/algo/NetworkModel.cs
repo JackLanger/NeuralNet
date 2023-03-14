@@ -9,7 +9,9 @@ namespace NeuronalesNetz.algo;
 public class NetworkModel
 {
 
+    private readonly object syncLock = new object();
     private int ImgSize = 784;
+    private double _expect = 1;
     /// <summary>
     ///     Tuple array of Vector and Matrix where the matrix is the respective incoming weighting matrix for the layer and the
     ///     vector the output layer. if the matrix is null the layer is equal to the input layer and there for the parsed
@@ -18,40 +20,65 @@ public class NetworkModel
     private static (Vector, Matrix?)[] _layers;
 
     private int _hiddenLayers;
+    private readonly bool _compressed;
 
     public NetworkModel():this(1)
     {
         
     }
 
-    public NetworkModel(int hlayers)
+    public NetworkModel(int hlayers, bool compressed = false)
     {
         _hiddenLayers = hlayers;
-        
+        _compressed = compressed;
     }
 
-    private void Setup(bool randomStart = true)
+    private void Setup(int[]? layers = null,bool compress = false, bool randomStart = true)
     {
         //todo reassess this setup function, it seems overly complicated.
-        int layerCount = _hiddenLayers + 2;
+        var prev = compress ? 196:784;
+        int layerCount = _hiddenLayers + 1;
         _layers = new (Vector, Matrix?)[layerCount];
-        _layers[0] = (new Vector(784), null);
-        var prev = 784;
-        for (var i = 1; i < layerCount; i++)
+        _layers[0] = (new Vector(prev), null);
+        if(layers is null)
+            for (var i = 1; i < layerCount; i++)
+            {
+                prev = _layers[i - 1].Item1.Length;
+                var n = (int)Math.Sqrt(prev * 10)+10;
+                _layers[i] = randomStart 
+                    ? (new Vector(n), new Matrix(n, prev).WithRandom()*.1)
+                    : (new Vector(n), new Matrix(n, prev).WithValue(.05));
+            }
+        else
         {
-            prev = _layers[i - 1].Item1.Length;
-            var n = (int)Math.Sqrt(prev * 10)+10;
-            _layers[i] = randomStart 
-                ? (new Vector(n), new Matrix(n, prev).WithRandom()*.1)
-                : (new Vector(n), new Matrix(n, prev).WithValue(.05));
+            if (layers.Length != _hiddenLayers)
+            {
+                Setup();
+            }
+            for (var i = 1; i < layerCount; i++)
+            {
+                prev = _layers[i - 1].Item1.Length;
+                var n = layers[i - 1];
+                _layers[i] = randomStart 
+                    ? (new Vector(n), new Matrix(n, prev).WithRandom()*.1)
+                    : (new Vector(n), new Matrix(n, prev).WithValue(.05));
+            }
         }
 
         _layers[^1] = (new Vector(10), new Matrix(10, _layers[^2].Item1.Length).WithRandom()*.1);
     }
 
-    public void Train(int gens = 5, int gensize = 1750, float learningrate = .1f)
+    public void Train(int gens = 5,
+        int gensize = 1750,
+        float learningrate = .1f, 
+        bool convolution = false,
+        params int[]? layers)
     {
-        Setup();
+        if (convolution)
+        {
+            ConvulateInputs();
+        }
+        Setup(layers?.Length > 0 ? layers:null, compress: _compressed);
         Random rand = new();
         Stopwatch sw = new();
         
@@ -59,11 +86,20 @@ public class NetworkModel
         {
             sw.Start();
             Console.ForegroundColor = ConsoleColor.Green;
-            for (var j = 0; j < gensize; j++)
+            int count = 0;
+            
+            for(var j = 0; j < gensize; j++)
             {
-                var n = rand.Next((int)6e4);
-                var res = ProcessLayers(new Vector(ImgSize).FromBytes(MnistReader.TrainImage(n)));
-                var error = AssessError(MnistReader.TrainLabel(n), res);
+                Vector res;
+                Vector inp = new Vector(ImgSize).FromBytes(MnistReader.TrainImage(j));
+                if (_compressed)
+                {
+                    res = ProcessLayers(Convolution.Compress(ref inp));
+                }
+                else
+                    res = ProcessLayers(inp);
+                var error = AssessError(MnistReader.TrainLabel(j), res);
+                
                 PropagetError(error, learningrate);
                 Progress.PrintProgress(j+1, gensize, sw);
             }
@@ -71,7 +107,13 @@ public class NetworkModel
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Yellow;
             Assess(ref sw);
+            MnistReader.Shuffle();
         }
+    }
+
+    private void ConvulateInputs()
+    {
+        throw new NotImplementedException();
     }
 
     private void PropagetError(Vector error, float learningrate)
@@ -112,13 +154,18 @@ public class NetworkModel
         var tmp = new Vector(output.Length);
         for (var i = 0; i < output.Length; i++)
         {
-            var target = lable == i ? 1 : 0;
+            var target = lable == i ? _expect : 0;
             tmp[i] = (target - output[i]) ;
         }
 
         return tmp;
     }
 
+    public void Assess()
+    {
+        Stopwatch sw = new();
+        Assess(ref sw);
+    }
     private void Assess(ref Stopwatch sw,int iterations = 1000)
     {
         Random rand = new();
@@ -127,7 +174,13 @@ public class NetworkModel
         for (var i = 0; i < iterations; i++)
         {
             var n = rand.Next((int)1e4);
-            var res = ProcessLayers(new Vector(ImgSize).FromBytes(MnistReader.Image(n)));
+            Vector inp = new Vector(ImgSize).FromBytes(MnistReader.Image(n));
+            Vector res;
+            if (_compressed)
+                res = ProcessLayers(Convolution.Compress(ref inp));
+            else
+                res = ProcessLayers(inp);
+            
             if (res.Max() == MnistReader.Label(n)) hits++;
 
             Progress.PrintProgress(i+1, iterations, sw, hits);

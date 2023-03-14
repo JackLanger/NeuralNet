@@ -7,21 +7,26 @@ public class MnistReader
     private static readonly string MnistTrainLabels = "train-labels.idx1-ubyte";
     private static readonly string MnistImages = "t10k-images.idx3-ubyte";
     private static readonly string MnistLabels = "t10k-labels.idx1-ubyte";
-    private static byte[]? _trainImages;
+    private static Dictionary<int, byte[]>? _trainImages;
+    private static Dictionary<int, byte[]>? _images;
     private static byte[]? _trainlabels;
-    private static byte[]? _images;
     private static byte[]? _labels;
 
     public static byte[] TrainImage(int n)
     {
-#if DEBUG
-        _trainImages ??= File.ReadAllBytes(@$"D:\OSZIMT\Lehmann\NeuronalesNetz\NeuronalesNetz\data\{MnistTrainImages}");
-#endif
-        _trainImages ??= GetDataAsync(MnistTrainImages).Result;
-        var offset = 16;
-        var size = 784;
-
-        return Splice(ref _trainImages, offset + n * size, size);
+        if (_trainImages is null)
+        {
+            var offset = 16;
+            var size = 784;
+            _trainImages = new Dictionary<int, byte[]>();
+            var data = GetDataAsync(MnistTrainImages).Result;
+            for (int i = 0; i < 6e4; i++)
+            {
+                _trainImages.Add(i, Splice(ref data,offset +i *size, size));
+            }
+            
+        }
+        return _trainImages[n];
     }
 
     private static async Task<byte[]> GetDataAsync(string file)
@@ -46,36 +51,45 @@ public class MnistReader
 
     public static byte TrainLabel(int n)
     {
-        
-#if DEBUG
-        _trainImages ??= File.ReadAllBytes(@$"D:\OSZIMT\Lehmann\NeuronalesNetz\NeuronalesNetz\data\{MnistTrainLabels}");
-#endif
         _trainlabels ??= GetDataAsync(MnistTrainLabels).Result;
         var offset = 8;
-        return _trainlabels[offset + n];
+        return _trainlabels[offset+n];
     }
 
     public static byte[] Image(int n)
     {
-        
-#if DEBUG
-        _trainImages ??= File.ReadAllBytes(@$"D:\OSZIMT\Lehmann\NeuronalesNetz\NeuronalesNetz\data\{MnistImages}");
-#endif
-        _images ??= GetDataAsync(MnistImages).Result;
-        var offset = 16;
-        var size = 784;
+        if (_images is null)
+        {
+            var offset = 16;
+            var size = 784;
+            _images = new Dictionary<int, byte[]>();
+            var data = GetDataAsync(MnistImages).Result;
+            for (int i = 0; i < 1e4; i++)
+            {
+                _images.Add(i, Splice(ref data,offset +i *size, size));
+            }
+        }
 
-        return Splice(ref _images, offset + n * size, size);
+        return _images[n];
     }
 
     public static byte Label(int n)
     {
-        
-#if DEBUG
-        _trainImages ??= File.ReadAllBytes(@$"D:\OSZIMT\Lehmann\NeuronalesNetz\NeuronalesNetz\data\{MnistLabels}");
-#endif
         _labels ??= GetDataAsync(MnistLabels).Result;
         var offset = 8;
         return _labels[offset + n];
+    }
+
+
+    public static void Shuffle()
+    {
+        Random rand = new Random();
+        for (int i = 0; i < 6e4; i++)
+        {
+            int n = rand.Next((int)6e4);
+            n = n == i ? rand.Next((int)6e4) : n;
+            (_trainImages[i], _trainImages[n]) = (_trainImages[n], _trainImages[i]);
+            (_trainlabels[8 + i], _trainlabels[8 + n]) = (_trainlabels[8 + n], _trainlabels[8 + i]);
+        }
     }
 }
