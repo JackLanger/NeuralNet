@@ -1,4 +1,9 @@
-﻿namespace IO;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+namespace IO;
 
 public class MnistReader {
     // todo replace paths with urls and call http request on setup.
