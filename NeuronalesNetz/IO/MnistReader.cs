@@ -1,12 +1,11 @@
 ﻿namespace IO;
 
-public class MnistReader
-{
+public class MnistReader {
     // todo replace paths with urls and call http request on setup.
-    private static readonly string MnistTrainImages = "train-images.idx3-ubyte";
-    private static readonly string MnistTrainLabels = "train-labels.idx1-ubyte";
-    private static readonly string MnistImages = "t10k-images.idx3-ubyte";
-    private static readonly string MnistLabels = "t10k-labels.idx1-ubyte";
+    private readonly static string MnistTrainImages = "train-images.idx3-ubyte";
+    private readonly static string MnistTrainLabels = "train-labels.idx1-ubyte";
+    private readonly static string MnistImages = "t10k-images.idx3-ubyte";
+    private readonly static string MnistLabels = "t10k-labels.idx1-ubyte";
     private static Dictionary<int, byte[]>? _trainImages;
     private static Dictionary<int, byte[]>? _images;
     private static byte[]? _trainlabels;
@@ -20,18 +19,16 @@ public class MnistReader
             var size = 784;
             _trainImages = new Dictionary<int, byte[]>();
             var data = GetDataAsync(MnistTrainImages).Result;
-            for (int i = 0; i < 6e4; i++)
-            {
-                _trainImages.Add(i, Splice(ref data,offset +i *size, size));
-            }
-            
+            for (var i = 0; i < 6e4; i++) _trainImages.Add(i, Splice(ref data, offset + i * size, size));
+
         }
+
         return _trainImages[n];
     }
 
-    private static async Task<byte[]> GetDataAsync(string file)
+    private async static Task<byte[]> GetDataAsync(string file)
     {
-        
+
         var url =
             $"https://github.com/JackLanger/NeuralNet/raw/master/NeuronalesNetz/data/{file}";
 
@@ -53,7 +50,8 @@ public class MnistReader
     {
         _trainlabels ??= GetDataAsync(MnistTrainLabels).Result;
         var offset = 8;
-        return _trainlabels[offset+n];
+
+        return _trainlabels[offset + n];
     }
 
     public static byte[] Image(int n)
@@ -64,10 +62,7 @@ public class MnistReader
             var size = 784;
             _images = new Dictionary<int, byte[]>();
             var data = GetDataAsync(MnistImages).Result;
-            for (int i = 0; i < 1e4; i++)
-            {
-                _images.Add(i, Splice(ref data,offset +i *size, size));
-            }
+            for (var i = 0; i < 1e4; i++) _images.Add(i, Splice(ref data, offset + i * size, size));
         }
 
         return _images[n];
@@ -77,16 +72,17 @@ public class MnistReader
     {
         _labels ??= GetDataAsync(MnistLabels).Result;
         var offset = 8;
+
         return _labels[offset + n];
     }
 
 
     public static void Shuffle()
     {
-        Random rand = new Random();
-        for (int i = 0; i < 6e4; i++)
+        var rand = new Random();
+        for (var i = 0; i < 6e4; i++)
         {
-            int n = rand.Next((int)6e4);
+            var n = rand.Next((int)6e4);
             n = n == i ? rand.Next((int)6e4) : n;
             (_trainImages[i], _trainImages[n]) = (_trainImages[n], _trainImages[i]);
             (_trainlabels[8 + i], _trainlabels[8 + n]) = (_trainlabels[8 + n], _trainlabels[8 + i]);

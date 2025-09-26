@@ -1,0 +1,49 @@
+﻿# Rider
+.idea/
+*.sln.iml
+
+# Build results
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code workspace settings
+.vscode/
+
+# NuGet packages
+*.nupkg
+packages/
+*.snupkg
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Rider logs
+.idea/.idea.IC/
+.idea/.idea.IC/*
+
+# DotCover
+*.dotCover
+
+# Backup & temp files
+*.bak
+*.tmp
+*.log
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Others
+_ReSharper*/
+*.resharper
+*.DotSettings.user

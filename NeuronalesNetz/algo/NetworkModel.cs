@@ -1,54 +1,69 @@
 ﻿using System.Diagnostics;
 using IO;
-using MachineLearn.extension;
 using MathTools;
 using NeuronalesNetz.extension;
 
 namespace NeuronalesNetz.algo;
 
-public class NetworkModel
-{
+/// <summary>
+///     A Simple feed forward neural network model with backpropagation learning.
+///     The model supports multiple hidden layers and optional input compression via convolution.
+///     The network is designed to work with the MNIST dataset for handwritten digit recognition.
+///     It allows for customization of the number of hidden layers, learning rate, and training epochs.
+///     TODO: Use Vector2 and Vector3 for convolution and pooling layers. This will allow for more
+///     TODO: Implement saving and loading of the model to allow for persistence and sharing of trained
+///     models.
+///     TODO: Implement CUDA and ROCm support for GPU acceleration to handle larger datasets and
+///     increase Performance.
+///     TODO: Move Progress Updater to a separate Seperate Thread and use Observer Pattern to update
+///     progress. This will allow for smoother UI updates and better separation of concerns.
+///     TODO: Implement different activation functions and allow for customization of the activation
+///     Funtion
+///     TODO: Implement different loss functions and allow for customization of the loss function.
+///     TODO: Implement regularization techniques such as dropout and weight decay to prevent
+///     overfitting.
+///     TODO: Implement batch training to improve training efficiency and stability.
+///     TODO: Implement learning rate schedules to improve convergence and training efficiency.
+///     TODO: Implement Dataproviders to allow for easy switching between different datasets and data
+///     formats.
+/// </summary>
+public class NetworkModel {
+    private const double Expect = 1;
 
-    private readonly object syncLock = new object();
-    private int ImgSize = 784;
-    private double _expect = 1;
     /// <summary>
-    ///     Tuple array of Vector and Matrix where the matrix is the respective incoming weighting matrix for the layer and the
-    ///     vector the output layer. if the matrix is null the layer is equal to the input layer and there for the parsed
+    ///     Tuple array of Vector and Matrix where the matrix is the respective incoming weighting matrix
+    ///     for the layer and the
+    ///     vector the output layer. if the matrix is null the layer is equal to the input layer and there
+    ///     for the parsed
     ///     image.
     /// </summary>
     private static (Vector, Matrix?)[] _layers;
 
-    private int _hiddenLayers;
-    private readonly bool _compressed;
+    private readonly int _hiddenLayers;
 
-    public NetworkModel():this(1)
+    public NetworkModel() : this(1)
     {
-        
+    }
+    public NetworkModel(int hiddenLayers, bool compressed = false)
+    {
+        _hiddenLayers = hiddenLayers;
     }
 
-    public NetworkModel(int hlayers, bool compressed = false)
+    private void Setup(int[]? layers = null, bool compress = false, bool randomStart = true)
     {
-        _hiddenLayers = hlayers;
-        _compressed = compressed;
-    }
-
-    private void Setup(int[]? layers = null,bool compress = false, bool randomStart = true)
-    {
-        //todo reassess this setup function, it seems overly complicated.
-        var prev = compress ? 196:784;
-        int layerCount = _hiddenLayers + 1;
+        var prev = compress ? 196 : 784;
+        var layerCount = _hiddenLayers + 1;
         _layers = new (Vector, Matrix?)[layerCount];
         _layers[0] = (new Vector(prev), null);
-        if(layers is null)
+        if (layers is null)
+        {
             for (var i = 1; i < layerCount; i++)
             {
                 prev = _layers[i - 1].Item1.Length;
-                var n = (int)Math.Sqrt(prev * 10)+10;
-                _layers[i] = randomStart 
-                    ? (new Vector(n), new Matrix(n, prev).WithRandom()*.1)
-                    : (new Vector(n), new Matrix(n, prev).WithValue(.05));
+                var n = (int)Math.Sqrt(prev * 10) + 10;
+                _layers[i] = randomStart ? (new Vector(n), new Matrix(n, prev).WithRandom() * .1) : (new Vector(n), new Matrix(n, prev).WithValue(.05));
             }
+        }
         else
         {
             if (layers.Length != _hiddenLayers)
@@ -59,70 +74,66 @@ public class NetworkModel
             {
                 prev = _layers[i - 1].Item1.Length;
                 var n = layers[i - 1];
-                _layers[i] = randomStart 
-                    ? (new Vector(n), new Matrix(n, prev).WithRandom()*.1)
-                    : (new Vector(n), new Matrix(n, prev).WithValue(.05));
+                _layers[i] = randomStart ? (new Vector(n), new Matrix(n, prev).WithRandom() * .1) : (new Vector(n), new Matrix(n, prev).WithValue(.05));
             }
         }
-
-        _layers[^1] = (new Vector(10), new Matrix(10, _layers[^2].Item1.Length).WithRandom()*.1);
+        _layers[^1] = (new Vector(10), new Matrix(10, _layers[^2].Item1.Length).WithRandom() * .1);
     }
 
-    public void Train(int gens = 5,
-        int gensize = 1750,
-        float learningrate = .1f, 
-        bool convolution = false,
-        params int[]? layers)
+    private static Vector FromBytes(ref byte[] b)
     {
-        if (convolution)
-        {
-            ConvulateInputs();
-        }
-        Setup(layers?.Length > 0 ? layers:null, compress: _compressed);
+        var v = new Vector(b.Length);
+        for (var i = 0; i < b.Length; i++) v[i] = b[i];
+
+        return v;
+    }
+
+    /// <summary>
+    ///     Begin training of the network model.
+    /// </summary>
+    /// <param name="opt">Options for network training</param>
+    public void Train(NeuralNetworkTrainingOptions opt)
+    {
+        Setup(opt.Layers?.Length > 0 ? opt.Layers : null, opt.Convolution);
         Random rand = new();
         Stopwatch sw = new();
-        
-        for (var i = 0; i < gens; i++)
+        for (var i = 0; i < opt.Epochs; i++)
         {
             sw.Start();
             Console.ForegroundColor = ConsoleColor.Green;
-            int count = 0;
-            
-            for(var j = 0; j < gensize; j++)
+
+            for (var j = 0; j < opt.EpochSize; j++)
             {
-                Vector res;
-                Vector inp = new Vector(ImgSize).FromBytes(MnistReader.TrainImage(j));
-                if (_compressed)
-                {
-                    res = ProcessLayers(Convolution.Compress(ref inp));
-                }
-                else
-                    res = ProcessLayers(inp);
+                var inputFeatures = MnistReader.TrainImage(j);
+                var res = ProcessLayers(opt.Convolution ? Convolution.CompressFeatures(ref inputFeatures) : FromBytes(ref inputFeatures));
                 var error = AssessError(MnistReader.TrainLabel(j), res);
-                
-                PropagetError(error, learningrate);
-                Progress.PrintProgress(j+1, gensize, sw);
+                PropagetError(error, opt.LearningRate);
+                Progress.PrintProgress(j + 1, opt.EpochSize, sw);
             }
+
             sw.Reset();
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Assess(ref sw);
+            Assess(ref sw, opt.Convolution);
             MnistReader.Shuffle();
-        }
-    }
 
-    private void ConvulateInputs()
-    {
-        throw new NotImplementedException();
+            // adjust learning rate if needed
+            switch (opt.TrainingRateOptions)
+            {
+                case TrainingRateOptions.Constant: break;
+                case TrainingRateOptions.Logarithmic: opt.LearningRate = opt.LearningRate / (1 + i); break;
+                case TrainingRateOptions.Linear: opt.LearningRate = opt.LearningRate * (1 - (float)i / opt.Epochs); break;
+                default: throw new ArgumentOutOfRangeException();
+            }
+
+        }
     }
 
     private void PropagetError(Vector error, float learningrate)
     {
         var err = new Vector[_layers.Length - 1];
         err[^1] = error;
-
-        for (var i = _layers.Length-2; i > 0 ; i--) err[i-1] = _layers[i+1].Item2!.T * err[i];
-
+        for (var i = _layers.Length - 2; i > 0; i--) err[i - 1] = _layers[i + 1].Item2!.T * err[i];
         for (var i = _layers.Length - 1; i > 0; i--)
         {
             var outp = _layers[i].Item1;
@@ -137,13 +148,11 @@ public class NetworkModel
     {
         NormalizeBytes(ref v);
         _layers[0] = (v, null);
-
         for (var i = 1; i < _layers.Length; i++)
             // item 1 is the layer vector while item 2 refers to the weight matrix.
         {
             var matrix = _layers[i].Item2;
-            if (matrix != null)
-                _layers[i].Item1 = (matrix * _layers[i - 1].Item1).Activate();
+            if (matrix != null) _layers[i].Item1 = (matrix * _layers[i - 1].Item1).Activate();
         }
 
         return _layers[^1].Item1;
@@ -154,44 +163,69 @@ public class NetworkModel
         var tmp = new Vector(output.Length);
         for (var i = 0; i < output.Length; i++)
         {
-            var target = lable == i ? _expect : 0;
-            tmp[i] = (target - output[i]) ;
+            var target = lable == i ? Expect : 0;
+            tmp[i] = target - output[i];
         }
 
         return tmp;
     }
 
-    public void Assess()
+    /// <summary>
+    ///     Evaluates the accuracy of the network using test data.
+    /// </summary>
+    /// <param name="convolutionActive">
+    ///     Indicates whether input data should be compressed (e.g., using
+    ///     convolution).
+    /// </param>
+    public void Assess(bool convolutionActive)
     {
         Stopwatch sw = new();
-        Assess(ref sw);
+        Assess(ref sw, convolutionActive);
     }
-    private void Assess(ref Stopwatch sw,int iterations = 1000)
+
+    private void Assess(ref Stopwatch sw, bool compress = false, int iterations = 1000)
     {
         Random rand = new();
         var hits = 0;
         sw.Start();
         for (var i = 0; i < iterations; i++)
         {
-            var n = rand.Next((int)1e4);
-            Vector inp = new Vector(ImgSize).FromBytes(MnistReader.Image(n));
-            Vector res;
-            if (_compressed)
-                res = ProcessLayers(Convolution.Compress(ref inp));
-            else
-                res = ProcessLayers(inp);
-            
+            var n = rand.Next(10_000);
+            var inputFeatures = MnistReader.Image(n);
+            var res = ProcessLayers(compress ? Convolution.CompressFeatures(ref inputFeatures) : FromBytes(ref inputFeatures));
             if (res.Max() == MnistReader.Label(n)) hits++;
-
-            Progress.PrintProgress(i+1, iterations, sw, hits);
+            Progress.PrintProgress(i + 1, iterations, sw, hits);
         }
         Console.WriteLine();
     }
-
-
-
     private void NormalizeBytes(ref Vector v)
     {
         for (var i = 0; i < v.Length; i++) v[i] /= 256.0;
     }
+
+
+    private Vector Predict(ref byte[] inputFeatures, bool compress = false) => ProcessLayers(compress ? Convolution.CompressFeatures(ref inputFeatures) : FromBytes(ref inputFeatures));
+
+    public int PredictLabel(ref byte[] inputFeatures, bool compress = false)
+    {
+        var res = Predict(ref inputFeatures, compress);
+
+        return res.Max();
+    }
+}
+
+public enum TrainingRateOptions {
+    Constant,
+    Logarithmic,
+    Linear
+}
+
+public class NeuralNetworkTrainingOptions {
+    public int Epochs { get; set; } = 5;
+    public int EpochSize { get; set; } = 1750;
+    public float LearningRate { get; set; } = .1f;
+    public TrainingRateOptions TrainingRateOptions { get; set; } = TrainingRateOptions.Constant;
+    public bool Convolution { get; set; } = false;
+    public int[] Layers { get; set; } = [256];
+    public static NeuralNetworkTrainingOptions Default => new();
 }

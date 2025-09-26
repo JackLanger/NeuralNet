@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text;
-using MathTools;
 
-namespace MachineLearn.extension;
+namespace NeuronalesNetz.algo;
 
 public static class Progress
 {
