@@ -1,5 +1,4 @@
-﻿using System;
-using MathTools;
+﻿using MathTools;
 
 namespace NeuronalesNetz.algo;
 
@@ -12,7 +11,7 @@ public static class Convolution {
     /// <param name="inputFeatures">the input features</param>
     /// <returns>compressed features as an array of size 196</returns>
     /// <exception cref="Exception"></exception>
-    public static Vector CompressFeatures(ref byte[] inputFeatures)
+    public static Vector CompressFeatures(byte[] inputFeatures)
     {
         if (inputFeatures.Length != 784) throw new Exception("Input features must be 784 to apply convolution.");
 

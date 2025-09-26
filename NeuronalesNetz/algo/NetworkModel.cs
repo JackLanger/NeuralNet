@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using IO;
 using MathTools;
 using NeuronalesNetz.extension;
@@ -81,7 +80,7 @@ public class NetworkModel {
         _layers[^1] = (new Vector(10), new Matrix(10, _layers[^2].Item1.Length).WithRandom() * .1);
     }
 
-    private static Vector FromBytes(ref byte[] b)
+    private static Vector FromBytes(byte[] b)
     {
         var v = new Vector(b.Length);
         for (var i = 0; i < b.Length; i++) v[i] = b[i];
@@ -106,7 +105,7 @@ public class NetworkModel {
             for (var j = 0; j < opt.EpochSize; j++)
             {
                 var inputFeatures = MnistReader.TrainImage(j);
-                var res = ProcessLayers(opt.Convolution ? Convolution.CompressFeatures(ref inputFeatures) : FromBytes(ref inputFeatures));
+                var res = ProcessLayers(opt.Convolution ? Convolution.CompressFeatures(inputFeatures) : FromBytes(inputFeatures));
                 var error = AssessError(MnistReader.TrainLabel(j), res);
                 PropagetError(error, opt.LearningRate);
                 Progress.PrintProgress(j + 1, opt.EpochSize, sw);
@@ -115,7 +114,7 @@ public class NetworkModel {
             sw.Reset();
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Assess(ref sw, opt.Convolution);
+            Assess(sw, opt.Convolution);
             MnistReader.Shuffle();
 
             // adjust learning rate if needed
@@ -147,7 +146,7 @@ public class NetworkModel {
 
     private Vector ProcessLayers(Vector v)
     {
-        NormalizeBytes(ref v);
+        NormalizeBytes(v);
         _layers[0] = (v, null);
         for (var i = 1; i < _layers.Length; i++)
             // item 1 is the layer vector while item 2 refers to the weight matrix.
@@ -181,10 +180,10 @@ public class NetworkModel {
     public void Assess(bool convolutionActive)
     {
         Stopwatch sw = new();
-        Assess(ref sw, convolutionActive);
+        Assess(sw, convolutionActive);
     }
 
-    private void Assess(ref Stopwatch sw, bool compress = false, int iterations = 1000)
+    private void Assess(Stopwatch sw, bool compress = false, int iterations = 1000)
     {
         Random rand = new();
         var hits = 0;
@@ -193,23 +192,23 @@ public class NetworkModel {
         {
             var n = rand.Next(10_000);
             var inputFeatures = MnistReader.Image(n);
-            var res = ProcessLayers(compress ? Convolution.CompressFeatures(ref inputFeatures) : FromBytes(ref inputFeatures));
+            var res = ProcessLayers(compress ? Convolution.CompressFeatures(inputFeatures) : FromBytes(inputFeatures));
             if (res.Max() == MnistReader.Label(n)) hits++;
             Progress.PrintProgress(i + 1, iterations, sw, hits);
         }
         Console.WriteLine();
     }
-    private void NormalizeBytes(ref Vector v)
+    private void NormalizeBytes(Vector v)
     {
         for (var i = 0; i < v.Length; i++) v[i] /= 256.0;
     }
 
 
-    private Vector Predict(ref byte[] inputFeatures, bool compress = false) => ProcessLayers(compress ? Convolution.CompressFeatures(ref inputFeatures) : FromBytes(ref inputFeatures));
+    private Vector Predict(byte[] inputFeatures, bool compress = false) => ProcessLayers(compress ? Convolution.CompressFeatures(inputFeatures) : FromBytes(inputFeatures));
 
-    public int PredictLabel(ref byte[] inputFeatures, bool compress = false)
+    public int PredictLabel(byte[] inputFeatures, bool compress = false)
     {
-        var res = Predict(ref inputFeatures, compress);
+        var res = Predict(inputFeatures, compress);
 
         return res.Max();
     }
@@ -225,7 +224,7 @@ public class NeuralNetworkTrainingOptions {
     public int Epochs { get; set; } = 5;
     public int EpochSize { get; set; } = 1750;
     public float LearningRate { get; set; } = .1f;
-    public TrainingRateOptions TrainingRateOptions { get; set; } = TrainingRateOptions.Constant;
+    public TrainingRateOptions TrainingRateOptions { get; init; } = TrainingRateOptions.Constant;
     public bool Convolution { get; set; } = false;
     public int[] Layers { get; set; } = [256];
     public static NeuralNetworkTrainingOptions Default => new();
