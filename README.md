@@ -243,7 +243,6 @@ This project is open source. See the repository for license details.
 
 - MNIST dataset creators and maintainers
 - .NET community for excellent tooling
-- Contributors to the MathTools library
 
 ---
 
