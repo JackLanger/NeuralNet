@@ -1,6 +1,6 @@
 ﻿using NeuralNetworkLib.Model;
 
-var options = new NeuralNetworkTrainingOptions
+var options = new ModelOptions
 {
     Epochs = 5,
     EpochSize = 20000,
