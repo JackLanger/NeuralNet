@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using IO;
 using MathLib.Linalg;
-using NeuronalesNetz.extension;
+using NeuralNetworkLib.extension;
 
-namespace NeuronalesNetz.algo;
+namespace NeuralNetworkLib.algo;
 
 /// <summary>
 ///     A Simple feed forward neural network model with backpropagation learning.
@@ -139,7 +139,8 @@ public class NetworkModel {
             var outp = _layers[i].Item1;
             var next = _layers[i - 1].Item1;
             // update matrix. matrix should never be null at this point
-            var diff = learningrate * (err[i - 1] * outp * (1 - outp) * next.T());
+            // TODO: adjust for performance by using Matrix operations instead of Vector operations. This operations creates a lot of memory garbage.
+            var diff = learningrate * (err[i - 1].Hadamard(outp.Hadamard(1 - outp)) * next.T!);
             _layers[i].Item2 += diff;
         }
     }

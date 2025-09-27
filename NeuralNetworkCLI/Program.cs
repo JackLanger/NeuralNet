@@ -1,4 +1,4 @@
-﻿using NeuronalesNetz.algo;
+﻿using NeuralNetworkLib.algo;
 
 var nm = new NetworkModel(1, true);
 var options = new NeuralNetworkTrainingOptions

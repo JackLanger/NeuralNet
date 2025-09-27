@@ -1,6 +1,6 @@
 ﻿using MathLib.Linalg;
 
-namespace NeuronalesNetz.extension;
+namespace NeuralNetworkLib.extension;
 
 public static class MatrixExtension {
     /// <summary>
