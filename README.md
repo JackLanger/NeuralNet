@@ -17,7 +17,7 @@ A simple feedforward neural network implementation in C# designed for handwritte
 
 ### Prerequisites
 
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later
+- [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later
 - Internet connection (for downloading MNIST dataset)
 
 ### Installation
