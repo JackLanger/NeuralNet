@@ -26,7 +26,7 @@ public class NetworkModel {
     /// </summary>
     private readonly (Vector, Matrix?)[] _layers;
 
-    public NetworkModel(NeuralNetworkTrainingOptions options)
+    public NetworkModel(ModelOptions options)
     {
         Options = options;
         _activator = ActivatorFactory.Get(options.ActivatorFunction);
@@ -36,7 +36,7 @@ public class NetworkModel {
         // initialize tuples of layers and weights
         Setup(n, options.Layers.Length > 0 ? options.Layers : null, options.Convolution);
     }
-    private NeuralNetworkTrainingOptions Options { get; }
+    private ModelOptions Options { get; }
 
     private void Setup(int layerCount, int[]? layers = null, bool compress = false, bool randomStart = true)
     {
@@ -210,7 +210,7 @@ public enum TrainingRateOptions {
     Linear
 }
 
-public class NeuralNetworkTrainingOptions {
+public class ModelOptions {
     public int Epochs { get; init; } = 5;
     public int EpochSize { get; init; } = 1750;
     public float LearningRate { get; set; } = .1f;
@@ -221,5 +221,5 @@ public class NeuralNetworkTrainingOptions {
     public ActivatorFunctions ActivatorFunction { get; set; } = ActivatorFunctions.ReLU;
     public int HiddenLayerCount { get; set; } = 1;
 
-    public static NeuralNetworkTrainingOptions Default => new();
+    public static ModelOptions Default => new();
 }
