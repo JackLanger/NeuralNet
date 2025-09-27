@@ -100,7 +100,7 @@ public class Matrix(double[,] data) {
 
     public static Matrix operator +(Matrix left, Matrix right)
     {
-        if (left.Rows != right.Rows && left.Cols != right.Cols)
+        if (left.Rows != right.Rows || left.Cols != right.Cols)
         {
             throw new ArgumentException($"Cannot add matrices of different sizes {left.Rows}x{left.Cols} and {right.Rows}x{right.Cols}");
         }
