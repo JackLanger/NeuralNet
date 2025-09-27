@@ -7,6 +7,7 @@ var options = new ModelOptions
     LearningRate = .1f,
     TrainingRateOptions = TrainingRateOptions.Logarithmic,
     Convolution = false,
+    ActivatorFunction = ActivatorFunctions.LeakyReLU,
     Layers = [196]
 };
 

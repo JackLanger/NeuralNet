@@ -45,8 +45,7 @@ dotnet run --project NeuronalesNetz
 The default configuration trains a neural network with the following settings:
 
 ```csharp
-var nm = new NetworkModel(1, true);
-var options = new NeuralNetworkTrainingOptions
+var options = new ModelOptions
 {
     Epochs = 5,
     EpochSize = 20000,
@@ -56,25 +55,26 @@ var options = new NeuralNetworkTrainingOptions
     Layers = [196]
 };
 
-nm.Train(options);
+var nm = new NetworkModel(options);
 
-// Assess accuracy 10 times
-for (var i = 0; i < 10; i++) 
-    nm.Assess(options.Convolution);
+nm.Train();
+
+for (var i = 0; i < 10; i++) nm.Assess(options.Convolution);
 ```
 
 ### Training Configuration
 
 Customize your neural network training with these options:
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `Epochs` | int | 5 | Number of complete training cycles |
-| `EpochSize` | int | 1750 | Number of training samples per epoch |
-| `LearningRate` | float | 0.1f | Learning rate for weight updates |
+| Property | Type | Default  | Description |
+|----------|------|----------|-------------|
+| `Epochs` | int | 5        | Number of complete training cycles |
+| `EpochSize` | int | 1750     | Number of training samples per epoch |
+| `LearningRate` | float | 0.1f     | Learning rate for weight updates |
 | `TrainingRateOptions` | enum | Constant | Learning rate schedule |
-| `Convolution` | bool | false | Enable input compression via pooling |
-| `Layers` | int[] | [256] | Hidden layer sizes |
+| `Convolution` | bool | false    | Enable input compression via pooling |
+| `Layers` | int[] | [256]    | Hidden layer sizes |
+| `ActivatorFunction` | Func<float, float> | ReLU     | Activation function for neurons |
 
 ### Training Rate Options
 
@@ -182,8 +182,10 @@ var options = new NeuralNetworkTrainingOptions
     Epochs = 10,
     EpochSize = 50000,
     LearningRate = 0.5f,
-    TrainingRateOptions = TrainingRateOptions.Logarithmic
+    TrainingRateOptions = TrainingRateOptions.Logarithmic,
+    ActivatorFunction = ActivatorFunctions.LeakyReLU
 };
+
 ```
 
 ## 🎯 Performance
