@@ -26,17 +26,18 @@ public class NetworkModel {
     /// </summary>
     private readonly (Vector, Matrix?)[] _layers;
 
-    public NetworkModel(ModelOptions options)
+    private readonly ModelOptions _options;
+
+    public NetworkModel(ModelOptions? options = null)
     {
-        Options = options;
-        _activator = ActivatorFactory.Get(options.ActivatorFunction);
+        _options = options ?? ModelOptions.Default;
+        _activator = ActivatorFactory.Get(_options.ActivatorFunction);
         // create layers
-        var n = options.HiddenLayerCount + 1;
+        var n = _options.HiddenLayerCount + 1;
         _layers = new (Vector, Matrix?)[n];
         // initialize tuples of layers and weights
-        Setup(n, options.Layers.Length > 0 ? options.Layers : null, options.Convolution);
+        Setup(n, _options.Layers.Length > 0 ? _options.Layers : null, _options.Convolution);
     }
-    private ModelOptions Options { get; }
 
     private void Setup(int layerCount, int[]? layers = null, bool compress = false, bool randomStart = true)
     {
@@ -56,7 +57,7 @@ public class NetworkModel {
         }
         else
         {
-            if (layers.Length != Options.HiddenLayerCount)
+            if (layers.Length != _options.HiddenLayerCount)
             {
                 Setup(layerCount);
             }
@@ -84,32 +85,32 @@ public class NetworkModel {
     public void Train()
     {
         Stopwatch sw = new();
-        for (var i = 0; i < Options.Epochs; i++)
+        for (var i = 0; i < _options.Epochs; i++)
         {
             sw.Start();
             Console.ForegroundColor = ConsoleColor.Green;
 
-            for (var j = 0; j < Options.EpochSize; j++)
+            for (var j = 0; j < _options.EpochSize; j++)
             {
                 var inputFeatures = MnistReader.TrainImage(j);
-                var res = ForwardPass(Options.Convolution ? Convolution.CompressFeatures(inputFeatures) : FromBytes(inputFeatures));
+                var res = ForwardPass(_options.Convolution ? Convolution.CompressFeatures(inputFeatures) : FromBytes(inputFeatures));
                 var error = AssessError(MnistReader.TrainLabel(j), res);
-                PropagateError(error, Options.LearningRate);
-                Progress.PrintProgress(j + 1, Options.EpochSize, sw);
+                PropagateError(error, _options.LearningRate);
+                Progress.PrintProgress(j + 1, _options.EpochSize, sw);
             }
 
             sw.Reset();
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Assess(sw, Options.Convolution);
+            Assess(sw, _options.Convolution);
             MnistReader.Shuffle();
 
             // adjust learning rate if needed
-            switch (Options.TrainingRateOptions)
+            switch (_options.TrainingRateOptions)
             {
                 case TrainingRateOptions.Constant: break;
-                case TrainingRateOptions.Logarithmic: Options.LearningRate = Options.LearningRate / (1 + i); break;
-                case TrainingRateOptions.Linear: Options.LearningRate = Options.LearningRate * (1 - (float)i / Options.Epochs); break;
+                case TrainingRateOptions.Logarithmic: _options.LearningRate = _options.LearningRate / (1 + i); break;
+                case TrainingRateOptions.Linear: _options.LearningRate = _options.LearningRate * (1 - (float)i / _options.Epochs); break;
                 default: throw new ArgumentOutOfRangeException();
             }
 
@@ -215,10 +216,10 @@ public class ModelOptions {
     public int EpochSize { get; init; } = 1750;
     public float LearningRate { get; set; } = .1f;
     public TrainingRateOptions TrainingRateOptions { get; init; } = TrainingRateOptions.Constant;
-    public bool Convolution { get; init; } = false;
+    public bool Convolution { get; init; }
     public int[] Layers { get; init; } = [256];
 
-    public ActivatorFunctions ActivatorFunction { get; set; } = ActivatorFunctions.ReLU;
+    public ActivatorFunctions ActivatorFunction { get; init; } = ActivatorFunctions.ReLU;
     public int HiddenLayerCount { get; set; } = 1;
 
     public static ModelOptions Default => new();
