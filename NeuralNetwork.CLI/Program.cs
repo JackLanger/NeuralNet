@@ -1,6 +1,5 @@
-﻿using NeuralNetworkLib.algo;
+﻿using NeuralNetworkLib.Model;
 
-var nm = new NetworkModel(1, true);
 var options = new NeuralNetworkTrainingOptions
 {
     Epochs = 5,
@@ -11,6 +10,8 @@ var options = new NeuralNetworkTrainingOptions
     Layers = [196]
 };
 
-nm.Train(options);
+var nm = new NetworkModel(options);
+
+nm.Train();
 
 for (var i = 0; i < 10; i++) nm.Assess(options.Convolution);

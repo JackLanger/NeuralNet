@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text;
 
-namespace NeuralNetworkLib.algo;
+namespace NeuralNetworkLib.Model;
 
 public static class Progress {
     public static void PrintProgress(int n, int total, Stopwatch sw, int hits = -1)

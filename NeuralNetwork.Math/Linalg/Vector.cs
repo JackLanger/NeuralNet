@@ -186,4 +186,11 @@ public class Vector(double[] data) {
     }
 
     public override int GetHashCode() => HashCode.Combine(data, Length);
+    public Vector Map(Func<double, double> func)
+    {
+        for (var i = 0; i < Length; i++)
+            data[i] = func(data[i]);
+
+        return this;
+    }
 }

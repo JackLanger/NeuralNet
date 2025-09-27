@@ -1,6 +1,6 @@
 ﻿using MathLib.Linalg;
 
-namespace NeuralNetworkLib.algo;
+namespace NeuralNetworkLib.Model;
 
 public static class Convolution {
 
