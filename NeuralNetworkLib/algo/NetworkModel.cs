@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using IO;
-using MathTools;
-using NeuronalesNetz.extension;
+using MathLib.Linalg;
+using NeuralNetworkLib.extension;
 
-namespace NeuronalesNetz.algo;
+namespace NeuralNetworkLib.algo;
 
 /// <summary>
 ///     A Simple feed forward neural network model with backpropagation learning.
@@ -107,7 +107,7 @@ public class NetworkModel {
                 var inputFeatures = MnistReader.TrainImage(j);
                 var res = ProcessLayers(opt.Convolution ? Convolution.CompressFeatures(inputFeatures) : FromBytes(inputFeatures));
                 var error = AssessError(MnistReader.TrainLabel(j), res);
-                PropagetError(error, opt.LearningRate);
+                PropagateError(error, opt.LearningRate);
                 Progress.PrintProgress(j + 1, opt.EpochSize, sw);
             }
 
@@ -129,7 +129,7 @@ public class NetworkModel {
         }
     }
 
-    private void PropagetError(Vector error, float learningrate)
+    public void PropagateError(Vector error, float learningrate)
     {
         var err = new Vector[_layers.Length - 1];
         err[^1] = error;
@@ -139,7 +139,8 @@ public class NetworkModel {
             var outp = _layers[i].Item1;
             var next = _layers[i - 1].Item1;
             // update matrix. matrix should never be null at this point
-            var diff = learningrate * (err[i - 1] * outp * (1 - outp) * next.T());
+            // TODO: adjust for performance by using Matrix operations instead of Vector operations. This operations creates a lot of memory garbage.
+            var diff = learningrate * (err[i - 1].Hadamard(outp.Hadamard(1 - outp)) * next.T!);
             _layers[i].Item2 += diff;
         }
     }

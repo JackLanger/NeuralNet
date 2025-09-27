@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using NeuronalesNetz.algo;
+﻿using NeuralNetworkLib.algo;
 
 var nm = new NetworkModel(1, true);
 var options = new NeuralNetworkTrainingOptions
