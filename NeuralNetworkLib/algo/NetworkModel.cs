@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using IO;
-using MathTools;
+using MathLib.Linalg;
 using NeuronalesNetz.extension;
 
 namespace NeuronalesNetz.algo;
@@ -129,7 +129,7 @@ public class NetworkModel {
         }
     }
 
-    private void PropagetError(Vector error, float learningrate)
+    public void PropagetError(Vector error, float learningrate)
     {
         var err = new Vector[_layers.Length - 1];
         err[^1] = error;
