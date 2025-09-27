@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathLib", "MathLib\MathLib.csproj", "{CF7C08BE-3621-45EA-8096-436E5FF108F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetwork.Math", "NeuralNetwork.Math\NeuralNetwork.Math.csproj", "{CF7C08BE-3621-45EA-8096-436E5FF108F3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{24322A62-EAC7-4799-8258-AC4945D4E954}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetworkLib", "NeuralNetworkLib\NeuralNetworkLib.csproj", "{01E8A688-F5B0-48FE-8919-5E7E7D55DC25}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetwork.Core", "NeuralNetwork.Core\NeuralNetwork.Core.csproj", "{01E8A688-F5B0-48FE-8919-5E7E7D55DC25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetworkCLI", "NeuralNetworkCLI\NeuralNetworkCLI.csproj", "{53580B5A-A38D-48B7-9CDB-CF072880B375}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetwork.CLI", "NeuralNetwork.CLI\NeuralNetwork.CLI.csproj", "{53580B5A-A38D-48B7-9CDB-CF072880B375}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
