@@ -12,7 +12,6 @@ out/
 *.suo
 *.userosscache
 *.sln.docstates
-NeuronalesNetz.sln.DotSettings.user
 # VS Code workspace settings
 .vscode/
 
