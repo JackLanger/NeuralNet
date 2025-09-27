@@ -1,11 +1,9 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
 
-namespace NeuronalesNetz.algo;
+namespace NeuralNetworkLib.algo;
 
-public static class Progress
-{
+public static class Progress {
     public static void PrintProgress(int n, int total, Stopwatch sw, int hits = -1)
     {
         StringBuilder bars = new();
@@ -15,5 +13,4 @@ public static class Progress
             ? $"ASSESSING GEN : {n:0000}/{total}:[{bars}] {(double)hits / n:P} {sw.Elapsed:g}\r"
             : $"TRAINING GEN: {n:0000}/{total}:[{bars}] {sw.Elapsed:g}\r");
     }
-    
 }

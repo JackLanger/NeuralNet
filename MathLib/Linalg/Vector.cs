@@ -2,18 +2,29 @@
 
 public class Vector(double[] data) {
     private Matrix? _transpose;
-
     public Vector(int n)
         : this(new double[n])
     {
     }
 
+
     public int Length => data.Length;
+
+    public Matrix T => (_transpose ??= Transpose())!;
 
     public double this[int i]
     {
         get => data[i];
         set => data[i] = value;
+    }
+
+    private Matrix? Transpose()
+    {
+        var transposed = new Matrix(1, Length);
+        for (var col = 0; col < Length; ++col)
+            transposed[0, col] = data[col];
+
+        return transposed;
     }
 
     public static Matrix operator *(Vector v, Matrix m)
@@ -78,17 +89,18 @@ public class Vector(double[] data) {
         return vector;
     }
 
-    public static Vector operator *(Vector a, Vector b)
+    public static double operator *(Vector a, Vector b)
     {
         if (a.Length != b.Length)
         {
             throw new ArgumentException("Operation invalid on vertices of different dimensions");
         }
+        var dot = 0.0;
         var vector = new Vector(a.Length);
         for (var i = 0; i < a.Length; ++i)
-            vector[i] = a[i] * b[i];
+            dot += a[i] * b[i];
 
-        return vector;
+        return dot;
     }
 
     public static Vector operator *(Matrix m, Vector v)
@@ -105,6 +117,27 @@ public class Vector(double[] data) {
         return vector;
     }
 
+    /// <summary>
+    ///     Multiplies two vectors element wise, such that (a1, a2, a3) * (b1, b2, b3) = (a1*b1, a2*b2,
+    ///     a3*b3)
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public Vector Hadamard(Vector other)
+    {
+        if (Length != other.Length)
+        {
+            throw new ArgumentException("Operation invalid on vertices of different dimensions");
+        }
+        var vec = new Vector(Length);
+        var vector = new Vector(Length);
+        for (var i = 0; i < Length; ++i)
+            vec[i] = this[i] * other[i];
+
+        return vec;
+    }
+
     public double Abs()
     {
         var d = 0.0;
@@ -114,24 +147,10 @@ public class Vector(double[] data) {
         return Math.Sqrt(d);
     }
 
-    public Matrix T()
-    {
-        if (_transpose != null)
-        {
-            return _transpose;
-        }
-        _transpose = new Matrix(1, Length);
-        for (var col = 0; col < Length; ++col)
-            _transpose[0, col] = data[col];
-
-        return _transpose;
-    }
-
 
     /// <summary>
     ///     Returns the index of the maximum value in the vector.
     /// </summary>
-    /// <param name="v"></param>
     /// <returns></returns>
     public int Max()
     {
@@ -149,4 +168,24 @@ public class Vector(double[] data) {
     }
 
     public Vector Normalize() => this / Abs();
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is not Vector other || other.Length != Length)
+        {
+            return false;
+        }
+
+
+        for (var i = 0; i < Length; i++)
+            if (Math.Abs(this[i] - other[i]) > .000001)
+            {
+                return false;
+            }
+
+        return true;
+
+    }
+
+    public override int GetHashCode() => HashCode.Combine(data, Length);
 }
