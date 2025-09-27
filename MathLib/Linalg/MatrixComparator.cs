@@ -1,6 +1,6 @@
 ﻿namespace MathLib.Linalg;
 
-public class MatrixComperator : IEqualityComparer<Matrix> {
+public class MatrixComparator : IEqualityComparer<Matrix> {
     public bool Equals(Matrix? x, Matrix? y)
     {
         if (x == null || y == null || x.Rows != y.Rows || x.Cols != y.Cols)

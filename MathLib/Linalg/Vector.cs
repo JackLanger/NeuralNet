@@ -96,7 +96,6 @@ public class Vector(double[] data) {
             throw new ArgumentException("Operation invalid on vertices of different dimensions");
         }
         var dot = 0.0;
-        var vector = new Vector(a.Length);
         for (var i = 0; i < a.Length; ++i)
             dot += a[i] * b[i];
 
@@ -131,7 +130,6 @@ public class Vector(double[] data) {
             throw new ArgumentException("Operation invalid on vertices of different dimensions");
         }
         var vec = new Vector(Length);
-        var vector = new Vector(Length);
         for (var i = 0; i < Length; ++i)
             vec[i] = this[i] * other[i];
 

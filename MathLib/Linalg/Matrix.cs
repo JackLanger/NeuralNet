@@ -1,7 +1,7 @@
 ﻿namespace MathLib.Linalg;
 
 public class Matrix(double[,] data) {
-    private readonly MatrixComperator _comparer = new();
+    private readonly MatrixComparator _comparer = new();
     private double? _det;
     private Matrix? _transpose;
 
