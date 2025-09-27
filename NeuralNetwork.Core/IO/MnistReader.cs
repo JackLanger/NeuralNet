@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace IO;
+﻿namespace IO;
 
 public class MnistReader {
     // todo replace paths with urls and call http request on setup.
@@ -33,9 +28,8 @@ public class MnistReader {
 
     private async static Task<byte[]> GetDataAsync(string file)
     {
-
         var url =
-            $"https://github.com/JackLanger/NeuralNet/raw/master/NeuronalesNetz/data/{file}";
+            $"https://github.com/JackLanger/NeuralNet/raw/main/Resources/{file}";
 
         using HttpClient client = new();
 
