@@ -8,7 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\NeuralNetwork.Math\NeuralNetwork.Math.csproj" />
+        <ProjectReference Include="..\NeuralNetwork.Math\NeuralNetwork.Math.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\**\*"/>
     </ItemGroup>
 
 </Project>

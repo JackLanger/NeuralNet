@@ -70,9 +70,9 @@ public class Matrix(double[,] data) {
         set => SetRow(value, row);
     }
 
-    public double[] GetColumn(int col)
+    public Vector GetColumn(int col)
     {
-        return Enumerable.Range(0, data.GetLength(0)).Select(x => data[x, col]).ToArray();
+        return new Vector(Enumerable.Range(0, data.GetLength(0)).Select(x => data[x, col]).ToArray());
     }
 
     private Row GetRow(int row)
