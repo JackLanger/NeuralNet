@@ -166,7 +166,7 @@ public class Matrix(double[,] data) {
     {
         if (Rows != Cols)
         {
-            throw new ArgumentException("The can not be calculate the determinant of a non square matrix.");
+            throw new ArgumentException("Cannot calculate the determinant of a non-square matrix.");
         }
         var length = data.Length;
         if (length < 3)
