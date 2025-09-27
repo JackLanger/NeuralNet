@@ -1,9 +1,8 @@
-﻿using MathTools;
+﻿using MathLib.Linalg;
 
 namespace NeuronalesNetz.extension;
 
-public static class MatrixExtension
-{
+public static class MatrixExtension {
     /// <summary>
     ///     Sets all the fields of the matrix to a given value val.
     /// </summary>
@@ -30,6 +29,7 @@ public static class MatrixExtension
         for (var i = 0; i < m.Rows; i++)
         for (var j = 0; j < m.Cols; j++)
             m[i, j] = rand.NextDouble();
+
         return m;
     }
 }

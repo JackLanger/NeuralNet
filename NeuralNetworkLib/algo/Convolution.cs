@@ -1,4 +1,4 @@
-﻿using MathTools;
+﻿using MathLib.Linalg;
 
 namespace NeuronalesNetz.algo;
 
