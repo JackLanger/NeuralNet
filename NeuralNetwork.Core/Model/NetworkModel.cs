@@ -41,7 +41,7 @@ public class NetworkModel {
     private void Setup(int layerCount, int[]? layers = null, bool compress = false, bool randomStart = true)
     {
 
-        // TODO: refactor this function is not robust and will not be able to handle differen types of input data it isspecific for the creation of the layers and weights needed for the MNIST data sets 
+        // TODO: refactor this function. It is not robust and will not be able to handle different types of input data. It is specific for the creation of the layers and weights needed for the MNIST data sets 
         var prev = compress ? 196 : 784;
 
         _layers[0] = (new Vector(prev), null);
@@ -128,7 +128,7 @@ public class NetworkModel {
             var diff = learningrate * _activator.Derivative(next, output, err[i - 1]);
 
             // CS8604: false positive, matrix will never be null, but must be nullable due to
-            // the situation that each layer but the output layer needs an corresponding weight matrix  
+            // the situation that each layer but the output layer needs a corresponding weight matrix 
             _layers[i].Item2 += diff;
 
         }

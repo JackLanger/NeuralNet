@@ -45,7 +45,7 @@ internal class ReLU : IActivatorFunction {
     public Vector Activate(Vector z)
     {
 
-        double ActivateReLu(double x) => x > 0 ? x : x * 0.01;
+        double ActivateReLu(double x) => x > 0 ? x : 0;
         for (var i = 0; i < z.Length; i++) z[i] = ActivateReLu(z[i]);
 
         return z;
