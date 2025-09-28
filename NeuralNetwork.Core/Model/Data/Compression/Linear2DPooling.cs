@@ -1,6 +1,6 @@
 ﻿using MathLib.Linalg;
 
-namespace NeuralNetworkLib.Model.Data.Compression;
+namespace NeuralNetwork.Core.Model.Data.Compression;
 
 internal class Linear2DPooling(int width) : IPooling {
     public Matrix Pool(Matrix input)

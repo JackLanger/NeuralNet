@@ -1,6 +1,7 @@
 ﻿using MathLib.Linalg;
+using NeuralNetwork.Model;
 
-namespace NeuralNetworkLib.Model.Activation;
+namespace NeuralNetwork.Core.Model.Activation;
 
 internal static class ActivatorFactory {
 

@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics;
 using IO;
 using MathLib.Linalg;
-using NeuralNetworkLib.Model.Activation;
-using NeuralNetworkLib.Model.Data.Compression;
+using NeuralNetwork.Core.Model;
+using NeuralNetwork.Core.Model.Activation;
+using NeuralNetwork.Core.Model.Data.Compression;
 
-namespace NeuralNetworkLib.Model;
+namespace NeuralNetwork.Model;
 
 /// <summary>
 ///     A Simple feed forward neural network model with backpropagation learning.
@@ -215,7 +216,6 @@ public class NetworkModel {
     private Matrix Predict(byte[][] inputFeatures) => ForwardPass(_pooling.Pool(Matrix.FromBytes(inputFeatures)));
 
     public int PredictLabel(byte[][] inputFeatures) => Predict(inputFeatures)[0].Max();
-
 }
 
 public enum TrainingRateOptions {

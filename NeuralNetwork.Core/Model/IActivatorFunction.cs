@@ -1,6 +1,6 @@
 ﻿using MathLib.Linalg;
 
-namespace NeuralNetworkLib.Model;
+namespace NeuralNetwork.Core.Model;
 
 public interface IActivatorFunction {
     /// <summary>

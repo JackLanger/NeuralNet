@@ -1,4 +1,4 @@
-﻿namespace NeuralNetworkLib.Model;
+﻿namespace NeuralNetwork.Model;
 
 public enum ActivatorFunctions {
     Sigmoid,

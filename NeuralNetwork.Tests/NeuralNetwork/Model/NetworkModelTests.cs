@@ -1,5 +1,6 @@
 using MathLib.Linalg;
-using NeuralNetworkLib.Model;
+using NeuralNetwork.Core.Model;
+using NeuralNetwork.Model;
 
 namespace NeuralNetwork.Tests.NeuralNetwork.Model;
 

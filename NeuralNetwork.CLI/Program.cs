@@ -1,4 +1,5 @@
-﻿using NeuralNetworkLib.Model;
+﻿using NeuralNetwork.Core.Model;
+using NeuralNetwork.Model;
 
 var options = new ModelOptions
 {

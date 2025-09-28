@@ -1,6 +1,6 @@
 ﻿using MathLib.Linalg;
 
-namespace NeuralNetworkLib.Model.Data.Compression;
+namespace NeuralNetwork.Core.Model.Data.Compression;
 
 /// <summary>
 ///     Pooling interface for reducing the dimensionality of input vectors.

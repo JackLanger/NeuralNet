@@ -1,5 +1,5 @@
 using MathLib.Linalg;
-using NeuralNetworkLib.Model;
+using NeuralNetwork.Model;
 
 namespace NeuralNetwork.Tests.NeuralNetwork.Model.Activation;
 
@@ -105,12 +105,22 @@ public class ActivationFunctionIntegrationTests {
     }
 
     [Test]
-    [TestCase(ActivatorFunctions.Sigmoid)]
-    [TestCase(ActivatorFunctions.ReLU)]
-    [TestCase(ActivatorFunctions.LeakyReLU)]
-    [TestCase(ActivatorFunctions.Tanh)]
-    public void NetworkModel_WithDifferentActivations_HandlesForwardPassCorrectly(ActivatorFunctions activation)
+    [TestCase(0)]
+    [TestCase(1)]
+    [TestCase(2)]
+    [TestCase(3)]
+    public void NetworkModel_WithDifferentActivations_HandlesForwardPassCorrectly(int n)
     {
+
+        var activation = n switch
+        {
+            0 => ActivatorFunctions.Sigmoid,
+            1 => ActivatorFunctions.ReLU,
+            2 => ActivatorFunctions.LeakyReLU,
+            3 => ActivatorFunctions.Tanh,
+            _ => throw new ArgumentException("Invalid activation function index")
+        };
+
         var options = new ModelOptions
         {
             ActivatorFunction = activation,
