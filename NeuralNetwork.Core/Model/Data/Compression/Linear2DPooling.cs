@@ -13,7 +13,9 @@ internal class Linear2DPooling(int width) : IPooling {
     public Vector Pool(Vector input)
     {
         var height = input.Length / width;
-        Vector v = new(height / 2 * (width / 2));
+        var pooledHeight = height / 2;
+        var pooledWidth = width / 2;
+        Vector v = new(pooledHeight * pooledWidth);
         var idx = 0;
         for (var i = 0; i < height; i += 2)
         {

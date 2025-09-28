@@ -7,22 +7,26 @@ internal class ParabolicFactorPooling : IPooling {
     public Vector Pool(Vector input)
     {
         Vector v = new(input.Length / 3);
+
         var index = 0;
+
         for (var i = 0; i <= input.Length - 3; i += 3)
-            if (input.Length - i < 3)
-            {
-                for (var k = i; k < input.Length; k++)
-                    v[index++] = input[k];
-            }
-            else
-            {
-                // Fit parabola to points (0, y0), (1, y1), (2, y2)
-                var y0 = input[i];
-                var y1 = input[i + 1];
-                var y2 = input[i + 2];
-                var a = FitParabolaA(y0, y1, y2);
-                v[index++] = a;
-            }
+        {
+            // Fit parabola to points (0, y0), (1, y1), (2, y2)
+            var y0 = input[i];
+            var y1 = input[i + 1];
+            var y2 = input[i + 2];
+            var a = FitParabolaA(y0, y1, y2);
+            v[index++] = a;
+        }
+
+        // Handle remaining elements (if input.Length is not a multiple of 3)
+        var remaining = input.Length % 3;
+        if (remaining > 0)
+        {
+            for (var k = input.Length - remaining; k < input.Length; k++)
+                v[index++] = input[k];
+        }
 
         return v;
     }
