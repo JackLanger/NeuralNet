@@ -16,11 +16,21 @@ internal class Linear2DPooling(int width) : IPooling {
         Vector v = new(height / 2 * (width / 2));
         var idx = 0;
         for (var i = 0; i < height; i += 2)
-        for (var j = 0; j < width; j += 2)
         {
-            var sum = input[i * width + j] + input[i * width + j + 1] + input[(i + 1) * width + j] +
-                input[(i + 1) * width + j + 1];
-            v[idx++] = sum / 4.0;
+            if (input.Length - i < 4)
+            {
+                for (var k = i; k < input.Length; k++)
+                    v[idx++] = input[k];
+
+                break;
+            }
+
+            for (var j = 0; j < width; j += 2)
+            {
+                var sum = input[i * width + j] + input[i * width + j + 1] + input[(i + 1) * width + j] +
+                    input[(i + 1) * width + j + 1];
+                v[idx++] = sum / 4.0;
+            }
         }
 
         return v;
