@@ -6,7 +6,7 @@ internal class LinearPooling : IPooling {
 
     public Vector Pool(Vector input)
     {
-        Vector v = new(input.Length / 4);
+        Vector v = new(input.Length + 3 / 4);
 
         var index = 0;
         var i = 0;
