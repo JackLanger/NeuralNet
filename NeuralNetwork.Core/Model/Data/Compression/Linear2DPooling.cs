@@ -19,9 +19,9 @@ internal class Linear2DPooling(int width) : IPooling {
         var idx = 0;
         for (var i = 0; i < height; i += 2)
         {
-            if (input.Length - i < 4)
+            if (i + 1 >= height)
             {
-                for (var k = i; k < input.Length; k++)
+                for (var k = i * width; k < input.Length; k++)
                     v[idx++] = input[k];
 
                 break;
