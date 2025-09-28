@@ -15,9 +15,7 @@ internal class Linear2DPooling(int width) : IPooling {
     public Vector Pool(Vector input)
     {
         var height = input.Length / width;
-        var pooledHeight = height / 2;
-        var pooledWidth = width / 2;
-        Vector v = new(pooledHeight * pooledWidth);
+        var v = ComputeOutputVector(height);
 
         var idx = 0;
 
@@ -33,24 +31,39 @@ internal class Linear2DPooling(int width) : IPooling {
             }
 
             for (var j = 0; j < width; j += 2)
-            {
-
-                if (j + 1 >= width)
+                if (j + 1 < width)
                 {
-                    // Not enough columns left, copy remaining element(s) as-is
-                    v[idx++] = input[i * width + j];
-                    v[idx++] = input[(i + 1) * width + j];
-
-                    continue;
+                    var sum = input[i * width + j] + input[i * width + j + 1] + input[(i + 1) * width + j] +
+                        input[(i + 1) * width + j + 1];
+                    v[idx++] = sum / 4.0;
                 }
-
-                var sum = input[i * width + j] + input[i * width + j + 1] + input[(i + 1) * width + j] +
-                    input[(i + 1) * width + j + 1];
-                v[idx++] = sum / 4.0;
-            }
+                else
+                {
+                    // Handle the last column when width is odd
+                    var sum = input[i * width + j] + input[(i + 1) * width + j];
+                    v[idx++] = sum / 2.0;
+                }
 
         }
 
         return v;
+    }
+    private Vector ComputeOutputVector(int height)
+    {
+
+        var pooledHeight = height / 2;
+        var pooledWidth = width / 2;
+        var outputSize = pooledHeight * pooledWidth;
+        if (height % 2 != 0)
+        {
+            outputSize += width; // leftover row
+        }
+        if (width % 2 != 0)
+        {
+            outputSize += pooledHeight; // leftover column for each 2-row block
+        }
+
+        return new Vector(outputSize);
+
     }
 }
