@@ -205,14 +205,9 @@ public class NetworkModel {
     }
 
 
-    private Vector Predict(byte[] inputFeatures, bool compress = false) => ForwardPass(_pooling.Pool(FromBytes(inputFeatures)));
+    private Vector Predict(byte[] inputFeatures) => ForwardPass(_pooling.Pool(FromBytes(inputFeatures)));
 
-    public int PredictLabel(byte[] inputFeatures, bool compress = false)
-    {
-        var res = Predict(inputFeatures, compress);
-
-        return res.Max();
-    }
+    public int PredictLabel(byte[] inputFeatures) => Predict(inputFeatures).Max();
 }
 
 public enum TrainingRateOptions {
