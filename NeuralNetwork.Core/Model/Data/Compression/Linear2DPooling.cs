@@ -5,10 +5,10 @@ namespace NeuralNetworkLib.Model.Data.Compression;
 internal class Linear2DPooling(int width) : IPooling {
 
     /// <summary>
-    ///     Compresses the input features from 784 to 196 using a simple 2x2 average pooling method.
+    ///     Compresses the input features using a simple 2x2 average pooling method. The input is interpreted as a 2D feature map of shape (height, width), and the output is a pooled feature map of shape (height/2, width/2).
     /// </summary>
-    /// <param name="input">the input features</param>
-    /// <returns>compressed features as an array of size 196</returns>
+    /// <param name="input">the input features as a flat vector representing a 2D feature map</param>
+    /// <returns>compressed features as a vector of size (height/2) * (width/2)</returns>
     /// <exception cref="Exception"></exception>
     public Vector Pool(Vector input)
     {
