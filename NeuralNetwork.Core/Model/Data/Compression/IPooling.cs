@@ -10,7 +10,7 @@ public interface IPooling {
     /// <summary>
     ///     Pools the input vector, reducing its dimensionality.
     /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
+    /// <param name="input">The input vector to be pooled, typically representing features or activations.</param>
+    /// <returns>The pooled result vector with reduced dimensionality.</returns>
     public Vector Pool(Vector input);
 }
