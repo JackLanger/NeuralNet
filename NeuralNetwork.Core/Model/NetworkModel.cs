@@ -3,6 +3,7 @@ using IO;
 using MathLib.Linalg;
 using NeuralNetworkLib.extension;
 using NeuralNetworkLib.Model.Activation;
+using NeuralNetworkLib.Model.Data.Compression;
 
 namespace NeuralNetworkLib.Model;
 
@@ -27,6 +28,7 @@ public class NetworkModel {
     private readonly (Vector, Matrix?)[] _layers;
 
     private readonly ModelOptions _options;
+    private readonly IPooling _pooling;
 
     public NetworkModel(ModelOptions? options = null)
     {
@@ -35,6 +37,14 @@ public class NetworkModel {
         // create layers
         var n = _options.HiddenLayerCount + 1;
         _layers = new (Vector, Matrix?)[n];
+        _pooling = _options.Pooling switch
+        {
+            Pooling.None => new GenericPooling(v => v),
+            Pooling.Linear => new LinearPooling(),
+            Pooling.Parabolic => new ParabolicPooling(),
+            Pooling.Linear2D => new Linear2DPooling(28),
+            _ => throw new ArgumentOutOfRangeException()
+        };
         // initialize tuples of layers and weights
         Setup(n, _options.Layers.Length > 0 ? _options.Layers : null, _options.Convolution);
     }
@@ -92,8 +102,8 @@ public class NetworkModel {
 
             for (var j = 0; j < _options.EpochSize; j++)
             {
-                var inputFeatures = MnistReader.TrainImage(j);
-                var res = ForwardPass(_options.Convolution ? Convolution.CompressFeatures(inputFeatures) : FromBytes(inputFeatures));
+                var inputFeatures = FromBytes(MnistReader.TrainImage(j));
+                var res = ForwardPass(_pooling.Pool(inputFeatures));
                 var error = AssessError(MnistReader.TrainLabel(j), res);
                 PropagateError(error, _options.LearningRate);
                 Progress.PrintProgress(j + 1, _options.EpochSize, sw);
@@ -102,7 +112,7 @@ public class NetworkModel {
             sw.Reset();
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Assess(sw, _options.Convolution);
+            Assess(sw);
             MnistReader.Shuffle();
 
             // adjust learning rate if needed
@@ -171,10 +181,10 @@ public class NetworkModel {
     public void Assess(bool convolutionActive)
     {
         Stopwatch sw = new();
-        Assess(sw, convolutionActive);
+        Assess(sw);
     }
 
-    private void Assess(Stopwatch sw, bool compress = false, int iterations = 1000)
+    private void Assess(Stopwatch sw, int iterations = 1000)
     {
         Random rand = new();
         var hits = 0;
@@ -182,8 +192,8 @@ public class NetworkModel {
         for (var i = 0; i < iterations; i++)
         {
             var n = rand.Next(10_000);
-            var inputFeatures = MnistReader.Image(n);
-            var res = ForwardPass(compress ? Convolution.CompressFeatures(inputFeatures) : FromBytes(inputFeatures));
+            var inputFeatures = FromBytes(MnistReader.Image(n));
+            var res = ForwardPass(_pooling.Pool(inputFeatures));
             if (res.Max() == MnistReader.Label(n)) hits++;
             Progress.PrintProgress(i + 1, iterations, sw, hits);
         }
@@ -195,7 +205,7 @@ public class NetworkModel {
     }
 
 
-    private Vector Predict(byte[] inputFeatures, bool compress = false) => ForwardPass(compress ? Convolution.CompressFeatures(inputFeatures) : FromBytes(inputFeatures));
+    private Vector Predict(byte[] inputFeatures, bool compress = false) => ForwardPass(_pooling.Pool(FromBytes(inputFeatures)));
 
     public int PredictLabel(byte[] inputFeatures, bool compress = false)
     {
@@ -211,6 +221,13 @@ public enum TrainingRateOptions {
     Linear
 }
 
+public enum Pooling {
+    None,
+    Linear,
+    Parabolic,
+    Linear2D
+}
+
 public class ModelOptions {
     public int Epochs { get; init; } = 5;
     public int EpochSize { get; init; } = 1750;
@@ -221,6 +238,8 @@ public class ModelOptions {
 
     public ActivatorFunctions ActivatorFunction { get; init; } = ActivatorFunctions.ReLU;
     public int HiddenLayerCount { get; set; } = 1;
+
+    public Pooling Pooling { get; init; } = Pooling.None;
 
     public static ModelOptions Default => new();
 }
