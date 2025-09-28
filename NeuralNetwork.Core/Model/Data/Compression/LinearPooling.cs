@@ -9,32 +9,25 @@ internal class LinearPooling : IPooling {
         Vector v = new(input.Length / 4);
 
         var index = 0;
-        for (var i = 0; i < input.Length; i += 4)
-        {
-            switch ((input.Length - i) % 4)
-            {
-                // If there are leftover elements, handle them
-                case 1:
-                    v[index++] = input[i];
-                    i++;
-
-                    break;
-                case 2:
-                    v[index++] = (input[i] + input[i + 1]) / 2.0;
-                    i += 2;
-
-                    break;
-                case 3:
-                    v[index++] = (input[i] + input[i + 1] + input[i + 2]) / 3.0;
-                    i += 3;
-
-                    break;
-            }
+        var i = 0;
+        for (; i < input.Length; i += 4)
             // always process a block of 4 if possible
             if (i < input.Length)
             {
                 v[index++] = (input[i] + input[i + 1] + input[i + 2] + input[i + 3]) / 4.0;
             }
+
+        if (i < input.Length)
+        {
+            var leftover = input.Length - i;
+            v[index] = leftover switch
+            {
+                // If there are leftover elements, handle them
+                1 => input[i],
+                2 => (input[i] + input[i + 1]) / 2.0,
+                3 => (input[i] + input[i + 1] + input[i + 2]) / 3.0,
+                _ => throw new ArgumentOutOfRangeException("Something went wrong in LinearPooling, there should be 0-3 leftover elements but got " + leftover)
+            };
         }
 
         return v;
