@@ -10,12 +10,10 @@ internal class LinearPooling : IPooling {
 
         var index = 0;
         var i = 0;
+
+        // always process a block of 4 if possible
         for (; i < input.Length; i += 4)
-            // always process a block of 4 if possible
-            if (i < input.Length)
-            {
-                v[index++] = (input[i] + input[i + 1] + input[i + 2] + input[i + 3]) / 4.0;
-            }
+            v[index++] = (input[i] + input[i + 1] + input[i + 2] + input[i + 3]) / 4.0;
 
         if (i < input.Length)
         {
