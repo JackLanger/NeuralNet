@@ -36,7 +36,7 @@ internal class ParabolicFactorPooling : IPooling {
         // System of equations:
         // y0 = c
         // y1 = a*1^2 + b*1 + c = a + b + c
-        // y2 = a*4 + b*2 + c
+        // y2 = a*2^2 + b*2 + c = 4a + 2b + c
         // Solve for a:
         // a = (y2 - 2*y1 + y0) / 2
         (y2 - 2 * y1 + y0) / 2.0;
