@@ -231,6 +231,7 @@ public class ModelOptions {
     public int HiddenLayerCount { get; set; } = 1;
 
     public Pooling Pooling { get; init; } = Pooling.None;
+    public int InputWidth { get; set; } = 28; // default for MNIST data set
 
     public static ModelOptions Default => new();
 }
