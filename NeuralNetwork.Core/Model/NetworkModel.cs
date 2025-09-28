@@ -41,7 +41,7 @@ public class NetworkModel {
         {
             Pooling.None => new GenericPooling(v => v),
             Pooling.Linear => new LinearPooling(),
-            Pooling.Parabolic => new ParabolicPooling(),
+            Pooling.Parabolic => new ParabolicFactorPooling(),
             Pooling.Linear2D => new Linear2DPooling(28),
             _ => throw new ArgumentOutOfRangeException()
         };
