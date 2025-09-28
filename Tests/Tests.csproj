@@ -22,6 +22,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\NeuralNetwork.Math\NeuralNetwork.Math.csproj" />
+        <ProjectReference Include="..\NeuralNetwork.Core\NeuralNetwork.Core.csproj" />
     </ItemGroup>
 
 </Project>
