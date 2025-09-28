@@ -1,6 +1,6 @@
 ﻿using MathLib.Linalg;
 
-namespace Tests.Math.Linalg;
+namespace NeuralNetwork.Tests.Math.Linalg;
 
 [TestFixture]
 public class VectorTest {

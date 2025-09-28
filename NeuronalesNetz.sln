@@ -2,11 +2,11 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetwork.Math", "NeuralNetwork.Math\NeuralNetwork.Math.csproj", "{CF7C08BE-3621-45EA-8096-436E5FF108F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{24322A62-EAC7-4799-8258-AC4945D4E954}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetwork.Core", "NeuralNetwork.Core\NeuralNetwork.Core.csproj", "{01E8A688-F5B0-48FE-8919-5E7E7D55DC25}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetwork.CLI", "NeuralNetwork.CLI\NeuralNetwork.CLI.csproj", "{53580B5A-A38D-48B7-9CDB-CF072880B375}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetwork.Tests", "NeuralNetwork.Tests\NeuralNetwork.Tests.csproj", "{4358E45A-AF7F-4285-BD12-75B2813EB89B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,10 +18,6 @@ Global
 		{CF7C08BE-3621-45EA-8096-436E5FF108F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF7C08BE-3621-45EA-8096-436E5FF108F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF7C08BE-3621-45EA-8096-436E5FF108F3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{24322A62-EAC7-4799-8258-AC4945D4E954}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{24322A62-EAC7-4799-8258-AC4945D4E954}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{24322A62-EAC7-4799-8258-AC4945D4E954}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{24322A62-EAC7-4799-8258-AC4945D4E954}.Release|Any CPU.Build.0 = Release|Any CPU
 		{01E8A688-F5B0-48FE-8919-5E7E7D55DC25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{01E8A688-F5B0-48FE-8919-5E7E7D55DC25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01E8A688-F5B0-48FE-8919-5E7E7D55DC25}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -30,5 +26,9 @@ Global
 		{53580B5A-A38D-48B7-9CDB-CF072880B375}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53580B5A-A38D-48B7-9CDB-CF072880B375}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53580B5A-A38D-48B7-9CDB-CF072880B375}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4358E45A-AF7F-4285-BD12-75B2813EB89B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4358E45A-AF7F-4285-BD12-75B2813EB89B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4358E45A-AF7F-4285-BD12-75B2813EB89B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4358E45A-AF7F-4285-BD12-75B2813EB89B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
