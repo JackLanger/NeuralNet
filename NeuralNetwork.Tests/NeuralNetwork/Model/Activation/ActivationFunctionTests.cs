@@ -15,7 +15,7 @@ public class ActivationFunctionIntegrationTests {
         {
             ActivatorFunction = ActivatorFunctions.Sigmoid,
             BatchSize = 1,
-            Layers = new[] { 3 },
+            Layers = [3],
             InputFeatures = 2,
             OutputFeatures = 1
         };
@@ -39,7 +39,7 @@ public class ActivationFunctionIntegrationTests {
         {
             ActivatorFunction = ActivatorFunctions.ReLU,
             BatchSize = 1,
-            Layers = new[] { 3 },
+            Layers = [3],
             InputFeatures = 2,
             OutputFeatures = 1
         };
@@ -63,7 +63,7 @@ public class ActivationFunctionIntegrationTests {
         {
             ActivatorFunction = ActivatorFunctions.LeakyReLU,
             BatchSize = 1,
-            Layers = new[] { 3 },
+            Layers = [3],
             InputFeatures = 2,
             OutputFeatures = 1
         };
@@ -87,7 +87,7 @@ public class ActivationFunctionIntegrationTests {
         {
             ActivatorFunction = ActivatorFunctions.Tanh,
             BatchSize = 1,
-            Layers = new[] { 3 },
+            Layers = [3],
             InputFeatures = 2,
             OutputFeatures = 1
         };
@@ -125,7 +125,7 @@ public class ActivationFunctionIntegrationTests {
         {
             ActivatorFunction = activation,
             BatchSize = 1,
-            Layers = new[] { 2 },
+            Layers = [2],
             InputFeatures = 3,
             OutputFeatures = 1,
             Pooling = Pooling.None
