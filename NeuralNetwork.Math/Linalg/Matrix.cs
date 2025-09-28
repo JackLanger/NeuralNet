@@ -16,7 +16,6 @@ public class Matrix(double[,] data) {
 
     public Matrix(int n, int m) : this(new double[n, m]) {}
 
-
     public double D
     {
         get
@@ -70,10 +69,21 @@ public class Matrix(double[,] data) {
     ///     Calling this[row][column] will return the the same value as this[row, column]
     /// </summary>
     /// <param name="row"></param>
-    private Vector this[int row]
+    public Vector this[int row]
     {
         get => GetRow(row);
         set => SetRow(value, row);
+    }
+
+    public static Matrix Random(int n, int m)
+    {
+        var data = new double[n, m];
+        var rand = new Random();
+        for (var i = 0; i < n; i++)
+        for (var j = 0; j < m; j++)
+            data[i, j] = rand.NextDouble();
+
+        return new Matrix(data);
     }
 
     public Vector GetColumn(int col)
@@ -81,12 +91,12 @@ public class Matrix(double[,] data) {
         return new Vector(Enumerable.Range(0, data.GetLength(0)).Select(x => data[x, col]).ToArray());
     }
 
-    private Vector GetRow(int row)
+    public Vector GetRow(int row)
     {
         return new Vector(Enumerable.Range(0, data.GetLength(1)).Select(x => data[row, x]).ToArray());
     }
 
-    private void SetRow(Vector vec, int row)
+    public void SetRow(Vector vec, int row)
     {
         for (var i = 0; i < Cols; ++i)
             data[row, i] = vec[i];
@@ -230,7 +240,57 @@ public class Matrix(double[,] data) {
         return subArray;
     }
 
+    public Matrix Hadamard(Matrix other)
+    {
+        if (Rows != other.Rows && Cols != other.Cols)
+        {
+            throw new ArgumentException("Operation invalid on vertices of different dimensions");
+        }
+        var vec = new Matrix(Rows, Cols);
+        for (var i = 0; i < Rows; ++i)
+        for (var j = 0; j < Cols; ++j)
+            vec[i, j] = this[i, j] * other[i, j];
+
+        return vec;
+    }
+
     private double DeterminantSarrus() => data[0, 0] * data[1, 1] * data[2, 2] + data[1, 0] * data[2, 1] * data[0, 2] + data[2, 0] * data[0, 1] * data[1, 2] - data[2, 0] * data[1, 1] * data[0, 2] - data[2, 1] * data[1, 2] * data[0, 0] - data[2, 2] * data[1, 0] * data[0, 1];
 
     private double SmallDetermining() => data[0, 0] * data[1, 1] + data[0, 1] * data[1, 0] - data[1, 0] * data[0, 1] - data[0, 1] * data[0, 0];
+    public static Matrix FromBytes(byte[][] imgBatch)
+    {
+        var m = new Matrix(imgBatch.Length, imgBatch[0].Length);
+        for (var i = 0; i < imgBatch.Length; i++) m[i] = Vector.FromBytes(imgBatch[i]);
+
+        return m;
+    }
+    public Matrix Map(Func<double, double> func)
+    {
+
+        var tmp = new double[Rows, Cols];
+        for (var i = 0; i < Rows; i++)
+        for (var j = 0; j < Cols; j++)
+            tmp[i, j] = func(this[i, j]);
+
+        return new Matrix(tmp);
+    }
+
+    public static Matrix operator -(double d, Matrix m)
+    {
+        var tmp = m.Copy();
+        for (var i = 0; i < m.Rows; i++)
+        for (var j = 0; j < m.Cols; j++)
+            tmp[i, j] -= d;
+
+        return tmp;
+    }
+    private Matrix Copy()
+    {
+        var tmp = new double[Rows, Cols];
+        for (var i = 0; i < Rows; i++)
+        for (var j = 0; j < Cols; j++)
+            tmp[i, j] = this[i, j];
+
+        return new Matrix(tmp);
+    }
 }

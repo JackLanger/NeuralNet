@@ -14,9 +14,9 @@ public interface IActivatorFunction {
     ///     the
     ///     neural network during training.
     /// </summary>
-    /// <param name="z">Vector to be activated</param>
+    /// <param name="m">Vector to be activated</param>
     /// <returns>A new Activated Vector</returns>
-    Vector Activate(Vector z);
+    Matrix Activate(Matrix m);
     /// <summary>
     ///     Derivative of the activation function.
     ///     The derivative is essential for the backpropagation algorithm, which is used to train neural
@@ -33,5 +33,5 @@ public interface IActivatorFunction {
     /// </param>
     /// <param name="errorVector">Error vector between prediction and target values</param>
     /// <returns>Matrix of derivatives for backpropagation</returns>
-    Matrix Derivative(Vector inputLayer, Vector activatedNextLayer, Vector errorVector);
+    Matrix Derivative(Matrix inputLayer, Matrix activatedNextLayer, Matrix errorVector);
 }

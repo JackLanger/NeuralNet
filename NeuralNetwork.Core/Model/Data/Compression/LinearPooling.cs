@@ -3,8 +3,22 @@
 namespace NeuralNetworkLib.Model.Data.Compression;
 
 internal class LinearPooling : IPooling {
+    public Matrix Pool(Matrix input)
+    {
 
-    public Vector Pool(Vector input)
+        Matrix? result = null;
+
+        for (var i = 0; i < input.Rows; i++)
+        {
+            var v = Pool(input[i]);
+            result ??= new Matrix(input.Rows, v.Length);
+            result[i] = v;
+        }
+
+        return result!;
+    }
+
+    private Vector Pool(Vector input)
     {
         Vector v = new((input.Length + 3) / 4);
 
