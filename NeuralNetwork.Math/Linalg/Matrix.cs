@@ -33,7 +33,6 @@ public class Matrix(double[,] data) {
         }
     }
 
-
     public int Rows => data.GetLength(0);
 
     public int Cols => data.GetLength(1);
@@ -64,7 +63,14 @@ public class Matrix(double[,] data) {
         set => data[row, col] = value;
     }
 
-    private Row this[int row]
+    /// <summary>
+    ///     Returns or sets a specific row of the matrix. The result is an Vector even though it is not a
+    ///     typical representation of a matrix row, it is practical in the sense of computation if we want
+    ///     to use batching.
+    ///     Calling this[row][column] will return the the same value as this[row, column]
+    /// </summary>
+    /// <param name="row"></param>
+    private Vector this[int row]
     {
         get => GetRow(row);
         set => SetRow(value, row);
@@ -75,15 +81,15 @@ public class Matrix(double[,] data) {
         return new Vector(Enumerable.Range(0, data.GetLength(0)).Select(x => data[x, col]).ToArray());
     }
 
-    private Row GetRow(int row)
+    private Vector GetRow(int row)
     {
-        return new Row(Enumerable.Range(0, data.GetLength(1)).Select(x => data[row, x]).ToArray());
+        return new Vector(Enumerable.Range(0, data.GetLength(1)).Select(x => data[row, x]).ToArray());
     }
 
-    private void SetRow(Row rowdata, int row)
+    private void SetRow(Vector vec, int row)
     {
         for (var i = 0; i < Cols; ++i)
-            data[row, i] = rowdata[i];
+            data[row, i] = vec[i];
     }
 
     public override bool Equals(object? obj) => obj is Matrix other && Equals(other);
