@@ -9,7 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\NeuralNetwork.Core\NeuralNetwork.Core.csproj" />
+        <ProjectReference Include="..\NeuralNetwork.Core\NeuralNetwork.Core.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="../Resources/**/*" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
 </Project>

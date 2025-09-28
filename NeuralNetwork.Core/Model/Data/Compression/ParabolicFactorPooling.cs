@@ -3,6 +3,20 @@
 namespace NeuralNetworkLib.Model.Data.Compression;
 
 internal class ParabolicFactorPooling : IPooling {
+    public Matrix Pool(Matrix input)
+    {
+
+        Matrix? result = null;
+
+        for (var i = 0; i < input.Rows; i++)
+        {
+            var v = Pool(input[i]);
+            result ??= new Matrix(input.Rows, v.Length);
+            result[i] = v;
+        }
+
+        return result!;
+    }
 
     public Vector Pool(Vector input)
     {

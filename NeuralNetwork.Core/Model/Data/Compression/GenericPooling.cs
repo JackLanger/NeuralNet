@@ -2,7 +2,7 @@
 
 namespace NeuralNetworkLib.Model.Data.Compression;
 
-public class GenericPooling(Func<Vector, Vector> poolingFunction) : IPooling {
+public class GenericPooling(Func<Matrix, Matrix> poolingFunction) : IPooling {
 
-    public Vector Pool(Vector input) => poolingFunction(input);
+    public Matrix Pool(Matrix input) => poolingFunction(input);
 }

@@ -193,4 +193,20 @@ public class Vector(double[] data) {
 
         return this;
     }
+
+    public static Vector FromBytes(byte[] b)
+    {
+        var v = new Vector(b.Length);
+        for (var i = 0; i < b.Length; i++) v[i] = b[i];
+
+        return v;
+    }
+    public Matrix ToMatrix()
+    {
+        var m = new Matrix(1, Length);
+
+        m[0] = this;
+
+        return m;
+    }
 }
