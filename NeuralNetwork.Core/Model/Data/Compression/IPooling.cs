@@ -7,7 +7,6 @@ namespace NeuralNetworkLib.Model.Data.Compression;
 /// </summary>
 public interface IPooling {
 
-
     /// <summary>
     ///     Pools the input matrix, reducing its dimensionality.
     /// </summary>

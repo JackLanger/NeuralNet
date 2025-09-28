@@ -38,7 +38,6 @@ public class NetworkModel {
         _activator = ActivatorFactory.Get(_options.ActivatorFunction);
         // create layers
 
-
         _pooling = _options.Pooling switch
         {
             Pooling.None => new GenericPooling(m => m),
@@ -96,6 +95,7 @@ public class NetworkModel {
 
                 var res = ForwardPass(inputFeatureBatched);
                 var error = AssessError(imgBatch.Select(x => (int)x.Label).ToArray(), res);
+
                 PropagateError(error, _options.LearningRate);
                 Progress.PrintProgress(j + 1, _options.EpochSize / _options.BatchSize, sw);
             }
@@ -105,6 +105,7 @@ public class NetworkModel {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Assess(sw);
             _mnist.Shuffle();
+
 
             // adjust learning rate if needed
             switch (_options.TrainingRateOptions)
@@ -214,6 +215,7 @@ public class NetworkModel {
     private Matrix Predict(byte[][] inputFeatures) => ForwardPass(_pooling.Pool(Matrix.FromBytes(inputFeatures)));
 
     public int PredictLabel(byte[][] inputFeatures) => Predict(inputFeatures)[0].Max();
+
 }
 
 public enum TrainingRateOptions {
@@ -245,6 +247,9 @@ public class ModelOptions {
     public int OutputFeatures { get; init; } = 10; // default for MNIST data set
 
     public int BatchSize { get; init; } = 1;
+
+    public Pooling Pooling { get; init; } = Pooling.None;
+    public int InputWidth { get; set; } = 28; // default for MNIST data set
 
     public static ModelOptions Default => new();
 }
