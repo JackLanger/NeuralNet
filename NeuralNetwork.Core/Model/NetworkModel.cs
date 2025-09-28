@@ -42,7 +42,7 @@ public class NetworkModel {
             Pooling.None => new GenericPooling(v => v),
             Pooling.Linear => new LinearPooling(),
             Pooling.Parabolic => new ParabolicFactorPooling(),
-            Pooling.Linear2D => new Linear2DPooling(28),
+            Pooling.Linear2D => new Linear2DPooling(_options.InputWidth),
             _ => throw new ArgumentOutOfRangeException()
         };
         // initialize tuples of layers and weights
