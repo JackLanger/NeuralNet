@@ -174,11 +174,7 @@ public class NetworkModel {
     /// <summary>
     ///     Evaluates the accuracy of the network using test data.
     /// </summary>
-    /// <param name="convolutionActive">
-    ///     Indicates whether input data should be compressed (e.g., using
-    ///     convolution).
-    /// </param>
-    public void Assess(bool convolutionActive)
+    public void Assess()
     {
         Stopwatch sw = new();
         Assess(sw);
