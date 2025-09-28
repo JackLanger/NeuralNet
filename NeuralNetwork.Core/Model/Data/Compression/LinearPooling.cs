@@ -11,7 +11,7 @@ internal class LinearPooling : IPooling {
         var index = 0;
         for (var i = 0; i < input.Length; i += 4)
         {
-            switch (input.Length % 4)
+            switch ((input.Length - i) % 4)
             {
                 // If there are leftover elements, handle them
                 case 1:

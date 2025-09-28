@@ -15,4 +15,4 @@ var nm = new NetworkModel(options);
 
 nm.Train();
 
-for (var i = 0; i < 10; i++) nm.Assess(options.Convolution);
+for (var i = 0; i < 10; i++) nm.Assess();
