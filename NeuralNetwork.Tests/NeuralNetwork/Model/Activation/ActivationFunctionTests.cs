@@ -1,14 +1,13 @@
 using MathLib.Linalg;
 using NeuralNetworkLib.Model;
 
-namespace Tests.NeuralNetwork.Model.Activation;
+namespace NeuralNetwork.Tests.NeuralNetwork.Model.Activation;
 
 /// <summary>
-/// Integration tests for activation functions through NetworkModel
+///     Integration tests for activation functions through NetworkModel
 /// </summary>
 [TestFixture]
-public class ActivationFunctionIntegrationTests
-{
+public class ActivationFunctionIntegrationTests {
     [Test]
     public void NetworkModel_WithSigmoidActivation_InitializesCorrectly()
     {
@@ -132,9 +131,9 @@ public class ActivationFunctionIntegrationTests
         try
         {
             var model = new NetworkModel(options,
-                (inputLayer, null),
-                (hiddenLayer, hiddenWeights),
-                (outputLayer, outputWeights));
+            (inputLayer, null),
+            (hiddenLayer, hiddenWeights),
+            (outputLayer, outputWeights));
 
             Assert.That(model, Is.Not.Null);
         }

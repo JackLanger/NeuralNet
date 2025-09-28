@@ -1,15 +1,14 @@
 using NeuralNetworkLib.Model;
 
-namespace Tests.NeuralNetwork.Model;
+namespace NeuralNetwork.Tests.NeuralNetwork.Model;
 
 [TestFixture]
-public class ModelOptionsTests
-{
+public class ModelOptionsTests {
     [Test]
     public void Default_ReturnsOptionsWithDefaultValues()
     {
         var options = ModelOptions.Default;
-        
+
         Assert.That(options, Is.Not.Null);
         Assert.That(options.Epochs, Is.EqualTo(5));
         Assert.That(options.EpochSize, Is.EqualTo(1750));
@@ -62,9 +61,9 @@ public class ModelOptionsTests
     public void LearningRate_CanBeModified()
     {
         var options = new ModelOptions { LearningRate = 0.2f };
-        
+
         options.LearningRate = 0.3f;
-        
+
         Assert.That(options.LearningRate, Is.EqualTo(0.3f));
     }
 
@@ -72,32 +71,29 @@ public class ModelOptionsTests
     public void InputWidth_CanBeModified()
     {
         var options = new ModelOptions { InputWidth = 32 };
-        
+
         options.InputWidth = 64;
-        
+
         Assert.That(options.InputWidth, Is.EqualTo(64));
     }
 }
 
 [TestFixture]
-public class ActivatorFunctionsEnumTests
-{
+public class ActivatorFunctionsEnumTests {
     [Test]
     public void ActivatorFunctions_HasExpectedValues()
     {
         var values = Enum.GetValues<ActivatorFunctions>();
-        var expectedValues = new[] { 
-            ActivatorFunctions.Sigmoid, 
-            ActivatorFunctions.ReLU, 
-            ActivatorFunctions.LeakyReLU, 
-            ActivatorFunctions.Tanh 
+        var expectedValues = new[]
+        {
+            ActivatorFunctions.Sigmoid,
+            ActivatorFunctions.ReLU,
+            ActivatorFunctions.LeakyReLU,
+            ActivatorFunctions.Tanh
         };
 
         Assert.That(values.Length, Is.EqualTo(4));
-        foreach (var expected in expectedValues)
-        {
-            Assert.That(values, Contains.Item(expected));
-        }
+        foreach (var expected in expectedValues) Assert.That(values, Contains.Item(expected));
     }
 
     [Test]
@@ -111,44 +107,38 @@ public class ActivatorFunctionsEnumTests
 }
 
 [TestFixture]
-public class TrainingRateOptionsEnumTests
-{
+public class TrainingRateOptionsEnumTests {
     [Test]
     public void TrainingRateOptions_HasExpectedValues()
     {
         var values = Enum.GetValues<TrainingRateOptions>();
-        var expectedValues = new[] { 
-            TrainingRateOptions.Constant, 
-            TrainingRateOptions.Logarithmic, 
-            TrainingRateOptions.Linear 
+        var expectedValues = new[]
+        {
+            TrainingRateOptions.Constant,
+            TrainingRateOptions.Logarithmic,
+            TrainingRateOptions.Linear
         };
 
         Assert.That(values.Length, Is.EqualTo(3));
-        foreach (var expected in expectedValues)
-        {
-            Assert.That(values, Contains.Item(expected));
-        }
+        foreach (var expected in expectedValues) Assert.That(values, Contains.Item(expected));
     }
 }
 
 [TestFixture]
-public class PoolingEnumTests
-{
+public class PoolingEnumTests {
     [Test]
     public void Pooling_HasExpectedValues()
     {
         var values = Enum.GetValues<Pooling>();
-        var expectedValues = new[] { 
-            Pooling.None, 
-            Pooling.Linear, 
-            Pooling.Parabolic, 
-            Pooling.Linear2D 
+        var expectedValues = new[]
+        {
+            Pooling.None,
+            Pooling.Linear,
+            Pooling.Parabolic,
+            Pooling.Linear2D
         };
 
         Assert.That(values.Length, Is.EqualTo(4));
-        foreach (var expected in expectedValues)
-        {
-            Assert.That(values, Contains.Item(expected));
-        }
+        foreach (var expected in expectedValues) Assert.That(values, Contains.Item(expected));
     }
 }

@@ -1,12 +1,10 @@
 using MathLib.Linalg;
 using NeuralNetworkLib.Model;
-using System.Reflection;
 
-namespace Tests.NeuralNetwork.Model;
+namespace NeuralNetwork.Tests.NeuralNetwork.Model;
 
 [TestFixture]
-public class NetworkModelTests
-{
+public class NetworkModelTests {
     [Test]
     public void Constructor_WithDefaultOptions_InitializesCorrectly()
     {
@@ -65,8 +63,8 @@ public class NetworkModelTests
         try
         {
             var model = new NetworkModel(testOptions,
-                (inputLayer, null),
-                (outputLayer, weights));
+            (inputLayer, null),
+            (outputLayer, weights));
 
             Assert.That(model, Is.Not.Null);
         }
@@ -100,16 +98,16 @@ public class NetworkModelTests
             var outputWeights = Matrix.Random(2, 2);
 
             var model = new NetworkModel(testOptions,
-                (inputLayer, null),
-                (hiddenLayer, hiddenWeights),
-                (outputLayer, outputWeights));
+            (inputLayer, null),
+            (hiddenLayer, hiddenWeights),
+            (outputLayer, outputWeights));
 
             // Test that Assess method can be called
             model.Assess();
         }
-        catch (Exception ex) when (ex.Message.Contains("MNIST") || ex.Message.Contains("file") || 
-                                  ex.Message.Contains("Resource") || ex.Message.Contains("404") || 
-                                  ex.Message.Contains("Http"))
+        catch (Exception ex) when (ex.Message.Contains("MNIST") || ex.Message.Contains("file") ||
+                                   ex.Message.Contains("Resource") || ex.Message.Contains("404") ||
+                                   ex.Message.Contains("Http"))
         {
             // Expected - MNIST data may not be available in test environment
             Assert.Pass("Test passed - Assess method structure is correct, MNIST dependency expected");
